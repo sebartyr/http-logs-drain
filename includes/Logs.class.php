@@ -44,7 +44,7 @@ class Logs
     {
         $m = [];
 
-        if(preg_match("/instanceId=\"[a-z0-9\-]*\"/", $this->raw_logs, $m))
+        if(preg_match("/instanceId=\"[a-z0-9\-]+\"/", $this->raw_logs, $m))
         {
             $m[0] = str_replace('"', "", str_replace("instanceId=", "", $m[0]));
             return $m[0];
@@ -57,7 +57,7 @@ class Logs
     {
         $m = [];
 
-        if(preg_match("/\[.*\] .*$/", $this->raw_logs, $m))
+        if(preg_match("/\[instanceId=\"[a-z0-9\-]+.*\] .*$/", $this->raw_logs, $m))
         {
             $m[0] = preg_replace("/\[.*\] /", "", $m[0]);
             return $m[0];
