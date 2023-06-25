@@ -12,12 +12,24 @@ if (isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']))
             {
                 $lp = new LogsProcessor($post_content, Config::$config['mode']);
                 if($lp->write())
-                    echo 'Logs have been saved';
+                {
+                    $message = 'Logs have been saved';
+                    syslog(LOG_INFO, $message);
+                    echo $message;
+                }
                 else
-                    echo 'An error occured';
+                {
+                    $message = 'An error occured';
+                    syslog(LOG_ERR, $message);
+                    echo $message;
+                }
             }
             else
-                    echo 'An error occured : post content is empty';
+            {
+                $message = 'An error occured : post content is empty';
+                syslog(LOG_ERR, $message);
+                echo $message;
+            }
         }
         exit;
     }
