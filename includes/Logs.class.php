@@ -21,6 +21,11 @@ class Logs
         $this->logs["logsInfo"] = $this->extractLogsInfo();
     }
 
+    public function isValidated() : bool
+    {
+        return (!empty($this->logs["date"]) && !empty($this->logs["instanceId"]) && !empty($this->logs["logsInfo"]));
+    }
+
     public function getLogs() : array
     {
         return $this->logs;
@@ -29,6 +34,11 @@ class Logs
     public function toString() : string
     {
         return '('.$this->logs["instanceId"].') '.$this->logs["date"].' '.$this->logs["logsInfo"]."\n";
+    }
+
+    public function toCSVFormat() : string
+    {
+        return '('.$this->logs["instanceId"].');'.$this->logs["date"].';'.$this->logs["logsInfo"]."\n";
     }
 
     private function extractDate() : string
@@ -59,7 +69,7 @@ class Logs
 
         if(preg_match("/\[instanceId=\"[a-z0-9\-]+.*\] .*$/", $this->raw_logs, $m))
         {
-            $m[0] = preg_replace("/\[.*\] /", "", $m[0]);
+            $m[0] = preg_replace("/\[instanceId=\"[a-z0-9\-]+.*\] /", "", $m[0]);
             return $m[0];
         }
         return "";

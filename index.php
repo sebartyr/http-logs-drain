@@ -7,9 +7,17 @@ if (isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']))
     if($_SERVER['PHP_AUTH_USER'] == Config::$config['username'] && $_SERVER['PHP_AUTH_PW'] == Config::$config['password']) {
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
-            $lp = new LogsProcessor(file_get_contents('php://input'), Config::$config['mode']);
-            if($lp->write())
-                echo 'done';
+            $post_content = file_get_contents('php://input');
+            if(!empty($post_content))
+            {
+                $lp = new LogsProcessor(file_get_contents('php://input'), Config::$config['mode']);
+                if($lp->write())
+                    echo 'Logs have been saved';
+                else
+                    echo 'An error occured';
+            }
+            else
+                    echo 'An error occured : post content is empty';
         }
         exit;
     }

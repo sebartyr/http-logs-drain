@@ -4,7 +4,7 @@ require_once('config.php');
 // Connexion à la base de données
 try
 {
-    $bdd = new PDO(Config::$config['db']['mode'].':host='.Config::$config['db']['host'].';dbname='.Config::$config['db']['dbname'], 
+    $bdd = new PDO(Config::$config['db']['mode'].':host='.Config::$config['db']['host'].';port='.Config::$config['db']['port'].';dbname='.Config::$config['db']['dbname'], 
 	Config::$config['db']['username'], 
 	Config::$config['db']['password'],
 	array(PDO::ATTR_PERSISTENT => true));

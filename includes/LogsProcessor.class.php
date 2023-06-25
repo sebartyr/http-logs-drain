@@ -18,21 +18,44 @@ class LogsProcessor
 
     public function write() : bool
     {
-        if($this->mode == "file")
+        if($this->logs != NULL && $this->logs->isValidated())
         {
-            return $this->writeFile();
+            $prefix = (isset($_GET['prefix']) && !empty($_GET['prefix']))?$_GET['prefix'].'-':"";
+
+            if($this->mode == "text")
+            {
+                return $this->writeTextFile($prefix);
+            }
+            else if($this->mode == "csv")
+            {
+                return $this->writeCSVFile($prefix);
+            }
+            else if($this->mode == "sql")
+            {
+                return $this->writeSQL();
+            }
         }
-        else if($this->mode == "sql")
+
+        return false;
+    }
+    
+    public function writeCSVFile(string $prefix) : bool
+    {
+        $f = fopen($prefix.'logs-'.date("Y-m-d").'.csv', "a+");
+        if(flock($f, LOCK_EX))
         {
-            return $this->writeSQL();
+            if(fwrite($f, $this->logs->toCSVFormat()))
+            {
+                return fclose($f);
+            }
         }
 
         return false;
     }
 
-    public function writeFile() : bool
+    public function writeTextFile(string $prefix) : bool
     {
-        $f = fopen('logs-'.date("Y-m-d"), "a+");
+        $f = fopen($prefix.'logs-'.date("Y-m-d").'.log', "a+");
         if(flock($f, LOCK_EX))
         {
             if(fwrite($f, $this->logs->toString()))
@@ -52,9 +75,7 @@ class LogsProcessor
         $table = (isset($_GET['table']) && !empty($_GET['table']))?$_GET['table']:Config::$config['db']['table'];
 
         $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
-        return $req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo']));
-
-        return false;
+        return ($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) && $req->closeCursor());
     }
 
     private function processRawLog() : Logs
