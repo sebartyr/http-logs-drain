@@ -8,6 +8,9 @@ Class Config
 
         //writing mode (sql, csv, text)
         'mode' => 'sql',
+
+        //file path for text & CSV mode
+        'filepath' => "",
         
         //db parameters
         'db' => array(
