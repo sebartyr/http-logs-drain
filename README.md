@@ -1,11 +1,15 @@
 # HTTP-LOGS-DRAIN
 
 This tool written with PHP enables an HTTP logs drain for Clever Cloud applications and addons. 
-Logs can be sotred in a MySQL/PostgreSQL database or in a text file (`.log` or `.csv`).
+
+It creates an endpoint to get logs of your apps.
+Logs can be stored in a MySQL/PostgreSQL database or in a text file (`.log` or `.csv`).
 
 ## Installation as a Clever Cloud app
 
 First, clone this repository.
+
+### Tool configuration
 
 Configure the tool in `includes/config.php`
 
@@ -26,12 +30,14 @@ Configure the tool in `includes/config.php`
 | `db => dbname`   | Database name |
 | `db => username` | Database username |
 | `db => password` | Database password |
-| `db => logs`     | Table name where logs are stored |
+| `db => logs`     | Default table name where logs are stored |
 
-Deploy on your Clever Cloud app
+### Deploy on your Clever Cloud app
 - Create a PHP app using Git (not SFTP)
 - Create an PostgreSQL or MysQL addon if needed (SQL mode)
     - The table structure is provided in the repository for MySQL (PostgreSQL is comming)
+- Create a [FS Bucket](https://www.clever-cloud.com/doc/deploy/addon/fs-bucket/) addon if needed (CSV or LOG mode)
+    - Mount the bucket where log files will be stored on the instance.
 - Run `git commands`
     ```bash
     git add includes/config.php
@@ -46,5 +52,9 @@ Deploy on your Clever Cloud app
     clever drain create [--alias <alias>] HTTP <DRAIN-URL> --username <username> --password <password> 
     ```
 - You can add extra options in `<DRAIN-URL>`. It's useful when you want to store logs of multiple apps.
-    - `https://<DRAIN-URL>/?table=<table_name>` to configure another name than the provided one in `includes/config.php` (SQL mode)
+    - `https://<DRAIN-URL>/?table=<table_name>` to configure another table name than the provided one in `includes/config.php` (SQL mode)
     - `https://<DRAIN-URL>/?prefix=<your_prefix>` to configure a prefix to name text files (LOG or CSV mode).
+
+### More configuration...
+
+You could add a [cron job](https://www.clever-cloud.com/doc/administrate/cron/) to store text files on [Cellar](https://www.clever-cloud.com/doc/deploy/addon/cellar/)
