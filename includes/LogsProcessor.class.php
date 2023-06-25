@@ -21,27 +21,42 @@ class LogsProcessor
         if($this->logs != NULL && $this->logs->isValidated())
         {
             $prefix = (isset($_GET['prefix']) && !empty($_GET['prefix']))?$_GET['prefix'].'-':"";
+            $dirpath = (!empty(Config::$config['dirpath']) && is_dir(Config::$config['dirpath']))?Config::$config['dirpath'].'/':"./";
 
-            if($this->mode == "text")
+            $dirpath = Config::$config['dirpath'];
+
+            if(!empty($dirpath))
             {
-                return $this->writeTextFile($prefix);
+                if(!is_dir($dirpath))
+                {
+                    if(!mkdir($dirpath)) return false;
+                }
             }
-            else if($this->mode == "csv")
+            else
             {
-                return $this->writeCSVFile($prefix);
+                $dirpath = ".";
             }
-            else if($this->mode == "sql")
+
+            switch($this->mode)
             {
-                return $this->writeSQL();
+                case "text":
+                    return $this->writeTextFile($dirpath, $prefix);
+                    break;
+                case "csv":
+                    return $this->writeCSVFile($dirpath, $prefix);
+                    break;
+                case "sql":
+                    return $this->writeSQL();
+                    break;
             }
         }
 
         return false;
     }
     
-    public function writeCSVFile(string $prefix) : bool
+    public function writeCSVFile(string $dirpath, string $prefix) : bool
     {
-        $f = fopen($prefix.'logs-'.date("Y-m-d").'.csv', "a+");
+        $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv', "a+");
         if(flock($f, LOCK_EX))
         {
             if(fwrite($f, $this->logs->toCSVFormat()))
@@ -53,9 +68,9 @@ class LogsProcessor
         return false;
     }
 
-    public function writeTextFile(string $prefix) : bool
+    public function writeTextFile(string $dirpath, string $prefix) : bool
     {
-        $f = fopen($prefix.'logs-'.date("Y-m-d").'.log', "a+");
+        $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.log', "a+");
         if(flock($f, LOCK_EX))
         {
             if(fwrite($f, $this->logs->toString()))

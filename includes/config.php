@@ -7,10 +7,10 @@ Class Config
         'password' => "azerty",
 
         //writing mode (sql, csv, text)
-        'mode' => 'sql',
+        'mode' => 'csv',
 
-        //file path for text & CSV mode
-        'filepath' => "",
+        //dir path for text & CSV mode
+        'dirpath' => "test",
         
         //db parameters
         'db' => array(
