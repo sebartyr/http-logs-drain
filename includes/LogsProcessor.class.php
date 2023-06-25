@@ -16,12 +16,18 @@ class LogsProcessor
         $this->logs = $this->processRawLog();
     }
 
+    private function processRawLog() : Logs
+    {
+        $logs = new Logs($this->raw_logs);
+
+        return $logs;
+    }
+
     public function write() : bool
     {
         if($this->logs != NULL && $this->logs->isValidated())
         {
             $prefix = (isset($_GET['prefix']) && !empty($_GET['prefix']))?$_GET['prefix'].'-':"";
-            $dirpath = (!empty(Config::$config['dirpath']) && is_dir(Config::$config['dirpath']))?Config::$config['dirpath'].'/':"./";
 
             $dirpath = Config::$config['dirpath'];
 
@@ -39,8 +45,8 @@ class LogsProcessor
 
             switch($this->mode)
             {
-                case "text":
-                    return $this->writeTextFile($dirpath, $prefix);
+                case "log":
+                    return $this->writeLogFile($dirpath, $prefix);
                     break;
                 case "csv":
                     return $this->writeCSVFile($dirpath, $prefix);
@@ -68,7 +74,7 @@ class LogsProcessor
         return false;
     }
 
-    public function writeTextFile(string $dirpath, string $prefix) : bool
+    public function writeLogFile(string $dirpath, string $prefix) : bool
     {
         $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.log', "a+");
         if(flock($f, LOCK_EX))
@@ -92,12 +98,5 @@ class LogsProcessor
         $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
         return ($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) 
                 && $req->closeCursor());
-    }
-
-    private function processRawLog() : Logs
-    {
-        $logs = new Logs($this->raw_logs);
-
-        return $logs;
     }
 }

@@ -2,19 +2,19 @@
 Class Config
 {
     public static $config = array(
-        //http auth
+        // Http auth configuration
         'username' => "sebartyr",
         'password' => "azerty",
 
-        //writing mode (sql, csv, text)
+        // Storage mode (sql, csv, log)
         'mode' => 'csv',
 
-        //dir path for text & CSV mode
+        // Directory path for log & CSV mode
         'dirpath' => "test",
         
-        //db parameters
+        // Database parameters
         'db' => array(
-            'mode' => 'mysql',
+            'mode' => 'mysql', // mysql or pgsql
             'host'=> "localhost",
             'port' => "3306",
             'dbname' => "http-logs-drain",
