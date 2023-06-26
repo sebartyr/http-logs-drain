@@ -1,6 +1,6 @@
 # HTTP-LOGS-DRAIN
 
-This tool written with PHP enables an HTTP logs drain for Clever Cloud applications and addons. 
+This tool written with PHP enables an HTTP log drain for Clever Cloud applications and addons. 
 
 It creates an endpoint to get logs of your apps.
 Logs can be stored in a MySQL/PostgreSQL database or in a text file (`.log` or `.csv`).
@@ -22,7 +22,7 @@ Configure the tool in `includes/config.php`
 | `username`       | This is the username for the basic HTTP auth |
 | `password`       | This is the password for the basic HTTP auth |
 | `mode`           | Selected mode to save logs (`csv`, `log`, `sql`) |
-| `dirpath`        | Directory where `csv` and `text` logs are stored  |
+| `dirpath`        | Directory where `csv` and `log` files are stored  |
 | `db`             | Database options  |
 | `db => mode`     | Select either `mysql` or `pgsql` |
 | `db => host`     | Database hostname |

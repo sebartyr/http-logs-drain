@@ -57,6 +57,7 @@ class LogsProcessor
             }
         }
 
+        syslog(LOG_ERR, "Error: invalid log format");
         return false;
     }
     
@@ -71,6 +72,7 @@ class LogsProcessor
             }
         }
 
+        syslog(LOG_ERR, "Error: writeCSVFile");
         return false;
     }
 
@@ -85,6 +87,7 @@ class LogsProcessor
             }
         }
 
+        syslog(LOG_ERR, "Error: writeLogFile");
         return false;
     }
 
@@ -96,7 +99,12 @@ class LogsProcessor
         $table = (isset($_GET['table']) && !empty($_GET['table']))?$_GET['table']:Config::$config['db']['table'];
 
         $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
-        return ($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) 
-                && $req->closeCursor());
+        if($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) && $req->closeCursor()) 
+        {
+            return true;
+        }
+        
+        syslog(LOG_ERR, "Error: writeSQL");
+        return false;
     }
 }
