@@ -36,6 +36,7 @@ Configure the tool in `includes/config.php`
 - Create a PHP app using Git (not SFTP)
 - Create an PostgreSQL or MysQL addon if needed (SQL mode)
     - The table structure is provided in the repository for MySQL (PostgreSQL is comming)
+    - Update `includes/config.php` with the right credentials
 - Create a [FS Bucket](https://www.clever-cloud.com/doc/deploy/addon/fs-bucket/) addon if needed (CSV or LOG mode)
     - Mount the bucket where log files will be stored on the instance.
 - Run `git commands`
