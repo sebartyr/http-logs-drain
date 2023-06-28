@@ -1,5 +1,6 @@
 <?php
 require_once('Logs.class.php');
+require_once('Lock.class.php');
 require_once('config.php');
 
 class LogsProcessor
@@ -64,11 +65,13 @@ class LogsProcessor
     public function writeCSVFile(string $dirpath, string $prefix) : bool
     {
         $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv', "a+");
-        if(flock($f, LOCK_EX))
+        $lock = new Lock($f);
+
+        if($lock->lock())
         {
             if(fwrite($f, $this->logs->toCSVFormat()))
             {
-                return fclose($f);
+                return $lock->unlock() && fclose($f);
             }
         }
 
@@ -79,11 +82,13 @@ class LogsProcessor
     public function writeLogFile(string $dirpath, string $prefix) : bool
     {
         $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.log', "a+");
-        if(flock($f, LOCK_EX))
+        $lock = new Lock($f);
+
+        if($lock->lock())
         {
             if(fwrite($f, $this->logs->toString()))
             {
-                return fclose($f);
+                return $lock->unlock() && fclose($f);
             }
         }
 
