@@ -2,6 +2,8 @@
 require_once('includes/LogsProcessor.class.php');
 require_once('includes/config.php');
 
+header("Content-Type: application/json");
+
 if (isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']))
 {
     if($_SERVER['PHP_AUTH_USER'] == Config::$config['username'] && $_SERVER['PHP_AUTH_PW'] == Config::$config['password']) {
@@ -15,22 +17,26 @@ if (isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']))
                 {
                     $message = 'Logs have been saved';
                     syslog(LOG_INFO, $message);
-                    echo $message;
+                    echo '{"status": "'.$message.'"}';
                 }
                 else
                 {
                     $message = 'An error occured';
                     syslog(LOG_ERR, $message);
-                    echo $message;
+                    echo '{"status": "'.$message.'"}';
                 }
             }
             else
             {
                 $message = 'An error occured : post content is empty';
                 syslog(LOG_ERR, $message);
-                echo $message;
+                echo '{"status": "'.$message.'"}';
             }
         }
+
+        $message = 'An error occured : not a POST method';
+        syslog(LOG_ERR, $message);
+        echo '{"status": "'.$message.'"}';
         exit;
     }
 }
