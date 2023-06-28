@@ -36,7 +36,7 @@ class LogsProcessor
             {
                 if(!is_dir($dirpath))
                 {
-                    if(!mkdir($dirpath)) return false;
+                    if(!mkdir($dirpath, recursive:true)) return false;
                 }
             }
             else

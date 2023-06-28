@@ -33,10 +33,13 @@ if (isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']))
                 echo '{"status": "'.$message.'"}';
             }
         }
-
-        $message = 'An error occured : not a POST method';
-        syslog(LOG_ERR, $message);
-        echo '{"status": "'.$message.'"}';
+        else
+        {
+            $message = 'An error occured : not a POST method';
+            syslog(LOG_ERR, $message);
+            echo '{"status": "'.$message.'"}';
+        }
+        
         exit;
     }
 }

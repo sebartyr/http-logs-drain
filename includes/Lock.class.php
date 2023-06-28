@@ -27,16 +27,12 @@ class Lock
         return $this->has_lock;
     }
     
-
     public function unlock() : bool
     {
-        if($this->has_lock)
-        {   
-            if(unlink($this->uri.'.lock'))
-            {
+        if($this->has_lock && unlink($this->uri.'.lock'))
+        {
                 $this->has_lock = false;
                 return true;
-            }
         }
 
         syslog(LOG_ERR, "Error with file unlocking");
