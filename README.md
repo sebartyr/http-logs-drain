@@ -11,6 +11,8 @@ First, clone this repository.
 
 ### Tool configuration
 
+/!\ Require PHP 8
+
 Configure the tool in `includes/config.php`
 
 - Using environment variables is the better way : do not share secrets ;)
