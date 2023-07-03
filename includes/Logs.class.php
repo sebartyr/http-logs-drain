@@ -36,11 +36,6 @@ class Logs
         return '('.$this->logs["instanceId"].') '.$this->logs["date"].' '.$this->logs["logsInfo"]."\n";
     }
 
-    public function toCSVFormat() : string
-    {
-        return '('.$this->logs["instanceId"].');'.$this->logs["date"].';'.$this->logs["logsInfo"]."\n";
-    }
-
     private function extractDate() : string
     {
         $m = [];

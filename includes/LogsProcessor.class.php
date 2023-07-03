@@ -69,7 +69,7 @@ class LogsProcessor
 
         if($lock->lock())
         {
-            if(fwrite($f, $this->logs->toCSVFormat()))
+            if(fputcsv($f, $this->logs->getLogs(), ';'))
             {
                 return $lock->unlock() && fclose($f);
             }
