@@ -7,10 +7,10 @@ header("Content-Type: application/json");
 
 if($_SERVER['REQUEST_METHOD'] == 'POST')
 {
+    syslog(LOG_ERR, "index");
     $post_content = file_get_contents('php://input');
     if(!empty($post_content))
     {
-        syslog(LOG_ERR, "index");
         $lp = new LogsProcessor($post_content, Config::$config['mode']);
         if($lp->write())
         {
