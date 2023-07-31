@@ -4,6 +4,7 @@ require_once('includes/config.php');
 require_once('includes/login.php');
 
 //header("Content-Type: application/json");
+http_response_code(204);
 
 if($_SERVER['REQUEST_METHOD'] == 'POST')
 {
@@ -15,25 +16,25 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
             $message = 'Logs have been saved';
             syslog(LOG_INFO, $message);
-            echo '{"status": "'.$message.'"}';
+            //echo '{"status": "'.$message.'"}';
         }
         else
         {
             $message = 'An error occured';
             syslog(LOG_ERR, $message);
-            echo '{"status": "'.$message.'"}';
+            //echo '{"status": "'.$message.'"}';
         }
     }
     else
     {
         $message = 'An error occured : post content is empty';
         syslog(LOG_ERR, $message);
-        echo '{"status": "'.$message.'"}';
+        //echo '{"status": "'.$message.'"}';
     }
 }
 else
 {
     $message = 'An error occured : not a POST method';
     syslog(LOG_ERR, $message);
-    echo '{"status": "'.$message.'"}';
+    //echo '{"status": "'.$message.'"}';
 }

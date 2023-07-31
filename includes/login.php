@@ -9,7 +9,7 @@ if (!isset($_SERVER['PHP_AUTH_USER'])
 {
 
     header('WWW-Authenticate: Basic realm="HTTP-LOG-DRAIN"');
-    header('HTTP/1.0 401 Unauthorized');
-    echo 'HTTP/1.0 401 Unauthorized';
+    header('HTTP/1.1 401 Unauthorized');
+    echo 'HTTP/1.1 401 Unauthorized';
     exit;
 }
