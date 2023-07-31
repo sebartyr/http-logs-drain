@@ -15,8 +15,7 @@ class Lock
     {
         while(file_exists($this->uri.'.lock'))
         {
-            //sleep(1);
-            syslog(LOG_ERR, "OK");
+            usleep(1000);
         }
 
         $this->has_lock = link($this->uri, $this->uri.'.lock');
@@ -39,10 +38,4 @@ class Lock
         syslog(LOG_ERR, "Error with file unlocking");
         return false;
     }
-
-    public function __destruct()
-    {
-        $this->unlock();
-    }
-
 }
