@@ -85,7 +85,6 @@ class LogsProcessor
         $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.log', "a+");
         $lock = new Lock($f);
 
-        syslog(LOG_ERR, "writeLogFile");
         if($lock->lock())
         {
             if(fwrite($f, $this->logs->toString()))
