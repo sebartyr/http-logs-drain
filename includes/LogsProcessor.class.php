@@ -75,6 +75,7 @@ class LogsProcessor
             }
         }
 
+        $lock = NULL;
         syslog(LOG_ERR, "Error: writeCSVFile");
         return false;
     }
@@ -92,6 +93,7 @@ class LogsProcessor
             }
         }
 
+        $lock = NULL;
         syslog(LOG_ERR, "Error: writeLogFile");
         return false;
     }

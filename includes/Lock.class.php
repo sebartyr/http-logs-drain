@@ -39,4 +39,9 @@ class Lock
         return false;
     }
 
+    public function __destruct()
+    {
+        $this->unlock();
+    }
+
 }
