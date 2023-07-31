@@ -1,7 +1,7 @@
 <?php
 $post_content = file_get_contents('php://input');
 
-fastcgi_finish_request();
+if (!fastcgi_finish_request()) syslog(LOG_ERR, "KO");
 
 require_once('includes/LogsProcessor.class.php');
 require_once('includes/config.php');
