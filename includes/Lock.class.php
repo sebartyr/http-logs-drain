@@ -15,7 +15,7 @@ class Lock
     {
         while(file_exists($this->uri.'.lock'))
         {
-            usleep(10000);
+            sleep(1);
             syslog(LOG_ERR, "OK");
         }
 
