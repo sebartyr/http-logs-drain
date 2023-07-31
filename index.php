@@ -1,6 +1,8 @@
 <?php
 $post_content = file_get_contents('php://input');
 
+fastcgi_finish_request();
+
 require_once('includes/LogsProcessor.class.php');
 require_once('includes/config.php');
 require_once('includes/login.php');
