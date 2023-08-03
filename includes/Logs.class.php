@@ -55,39 +55,4 @@ class Logs
 
         return $s;
     }
-
-    /*private function extractDate() : string
-    {
-        $m = [];
-        if(preg_match("/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z/", $this->raw_logs, $m))
-            return $m[0];
-        
-        return "";
-    }
-
-    private function extractInstanceId() : string
-    {
-        $m = [];
-
-        if(preg_match("/instanceId=\"[a-z0-9\-]+\"/", $this->raw_logs, $m))
-        {
-            $m[0] = str_replace('"', "", str_replace("instanceId=", "", $m[0]));
-            return $m[0];
-        }
-            
-        return "";
-    }
-
-    private function extractLogsInfo() : string
-    {
-        $m = [];
-
-        if(preg_match("/\[instanceId=\"[a-z0-9\-]+.*\] .*$/", $this->raw_logs, $m))
-        {
-            $m[0] = preg_replace("/\[instanceId=\"[a-z0-9\-]+.*\] /", "", $m[0]);
-            return $m[0];
-        }
-        return "";
-    }*/
-
 }
