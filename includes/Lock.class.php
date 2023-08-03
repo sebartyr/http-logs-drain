@@ -38,5 +38,4 @@ class Lock
         syslog(LOG_ERR, "Error with file unlocking");
         return false;
     }
-
 }

@@ -30,7 +30,7 @@ class LogsProcessor
         {
             $prefix = (isset($_GET['prefix']) && !empty($_GET['prefix']))?$_GET['prefix'].'-':"";
 
-            $dirpath = Config::$config['dirpath'];
+            $dirpath = DIRPATH;
 
             if(!empty($dirpath))
             {
@@ -69,10 +69,15 @@ class LogsProcessor
 
         if($lock->lock())
         {
-            if(fwrite($f, $this->logs->toCSVFormat()))
+            foreach($this->logs->getLogs() as $logs)
             {
-                return $lock->unlock() && fclose($f);
+                if(!fputcsv($f, $logs, ';'))
+                {
+                    return false;
+                }
             }
+
+            return $lock->unlock() && fclose($f);
         }
 
         syslog(LOG_ERR, "Error: writeCSVFile");
@@ -100,16 +105,19 @@ class LogsProcessor
     {
         require_once('db_connect.php');
 
-        $l = $this->logs->getLogs();
-        $table = (isset($_GET['table']) && !empty($_GET['table']))?$_GET['table']:Config::$config['db']['table'];
+        $logs = $this->logs->getLogs();
+        $table = (isset($_GET['table']) && !empty($_GET['table']))?$_GET['table']:DB_TABLE;
 
-        $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
-        if($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) && $req->closeCursor()) 
+        foreach($logs as $l)
         {
-            return true;
+            $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
+            if(!($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) && $req->closeCursor())) 
+            {
+                syslog(LOG_ERR, "Error: writeSQL");
+                return false;
+            }
         }
         
-        syslog(LOG_ERR, "Error: writeSQL");
-        return false;
+        return true;
     }
 }
