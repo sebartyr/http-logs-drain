@@ -10,19 +10,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
     $post_content = file_get_contents('php://input');
     if(!empty($post_content))
     {
-        /*$lp = new LogsProcessor($post_content, Config::$config['mode']);
+        $lp = new LogsProcessor($post_content, MODE);
         if($lp->write())
         {
             $message = 'Logs have been saved';
             syslog(LOG_INFO, $message);
             echo '{"status": "'.$message.'"}';
-        }*/
-        //else
-        //{
+        }
+        else
+        {
             $message = 'An error occured';
             syslog(LOG_ERR, $message);
             echo '{"status": "'.$message.'"}';
-        //}
+        }
     }
     else
     {

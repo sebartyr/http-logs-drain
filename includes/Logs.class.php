@@ -11,19 +11,32 @@ class Logs
         $this->logs = [];
         $this->raw_logs = $raw_logs;
 
-        $this->process();
+        $this->logs = $this->convertRawLogs();
     }
 
-    private function process() : void
+    private function convertRawLogs() : array
     {
-        $this->logs["date"] = $this->extractDate();
-        $this->logs["instanceId"] = $this->extractInstanceId();
-        $this->logs["logsInfo"] = $this->extractLogsInfo();
+        $logs = [];
+        if(preg_match_all("/^.*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z).*instanceId=\"([a-z0-9\-]+)\".*\] (.*)$/m", $this->raw_logs, $m, PREG_SET_ORDER))
+        {
+            foreach($m as $t)
+            {
+                $logs[] = ['date' => $t[1], 'instanceId' => $t[2], 'logsInfo' => $t[3]];
+            }
+        }
+        
+        return $logs;
     }
 
     public function isValidated() : bool
     {
-        return (!empty($this->logs["date"]) && !empty($this->logs["instanceId"]) && !empty($this->logs["logsInfo"]));
+        $v = true;
+        foreach($this->logs as $logs)
+        {
+            $v = $v && (!empty($logs["date"]) && !empty($logs["instanceId"]) && !empty($logs["logsInfo"]));
+        }
+
+        return $v;
     }
 
     public function getLogs() : array
@@ -33,10 +46,17 @@ class Logs
 
     public function toString() : string
     {
-        return '('.$this->logs["instanceId"].') '.$this->logs["date"].' '.$this->logs["logsInfo"]."\n";
+        $s = "";
+
+        foreach($this->logs as $logs)
+        {
+            $s .= '('.$logs["instanceId"].') '.$logs["date"].' '.$logs["logsInfo"]."\n";
+        }
+
+        return $s;
     }
 
-    private function extractDate() : string
+    /*private function extractDate() : string
     {
         $m = [];
         if(preg_match("/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z/", $this->raw_logs, $m))
@@ -68,6 +88,6 @@ class Logs
             return $m[0];
         }
         return "";
-    }
+    }*/
 
 }

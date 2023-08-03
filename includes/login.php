@@ -4,8 +4,8 @@ require_once('config.php');
 
 if (!isset($_SERVER['PHP_AUTH_USER']) 
         || !isset($_SERVER['PHP_AUTH_PW']) 
-        || $_SERVER['PHP_AUTH_USER'] != Config::$config['username'] 
-        || $_SERVER['PHP_AUTH_PW'] != Config::$config['password']) 
+        || $_SERVER['PHP_AUTH_USER'] != USERNAME
+        || $_SERVER['PHP_AUTH_PW'] != PASSWORD) 
 {
 
     header('WWW-Authenticate: Basic realm="HTTP-LOG-DRAIN"');
