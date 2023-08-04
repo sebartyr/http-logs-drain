@@ -22,7 +22,7 @@ Configure the tool in `includes/config.php`
 | Options          | Description |
 | ---------------- | ----------- |
 | `USERNAME`       | This is the username for the basic HTTP auth |
-| `PASSWWORD`       | This is the password for the basic HTTP auth |
+| `PASSWORD`       | This is the password for the basic HTTP auth |
 | `MODE`           | Selected mode to save logs (`csv`, `log`, `sql`) |
 | `DIRPATH`        | Directory where `csv` and `log` files are stored  |
 | `DB_`             | Database options  |
