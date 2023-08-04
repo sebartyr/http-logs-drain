@@ -62,7 +62,7 @@ class LogsProcessor
         return false;
     }
     
-    public function writeCSVFile(string $dirpath, string $prefix) : bool
+    private function writeCSVFile(string $dirpath, string $prefix) : bool
     {
         $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv', "a+");
         $lock = new Lock($f);
@@ -87,7 +87,7 @@ class LogsProcessor
         return false;
     }
 
-    public function writeLogFile(string $dirpath, string $prefix) : bool
+    private function writeLogFile(string $dirpath, string $prefix) : bool
     {
         $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.log', "a+");
         $lock = new Lock($f);
@@ -104,7 +104,7 @@ class LogsProcessor
         return false;
     }
 
-    public function writeSQL() : bool
+    private function writeSQL() : bool
     {
         require_once('db_connect.php');
 
