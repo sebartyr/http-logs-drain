@@ -21,18 +21,18 @@ Configure the tool in `includes/config.php`
 
 | Options          | Description |
 | ---------------- | ----------- |
-| `username`       | This is the username for the basic HTTP auth |
-| `password`       | This is the password for the basic HTTP auth |
-| `mode`           | Selected mode to save logs (`csv`, `log`, `sql`) |
-| `dirpath`        | Directory where `csv` and `log` files are stored  |
-| `db`             | Database options  |
-| `db => mode`     | Select either `mysql` or `pgsql` |
-| `db => host`     | Database hostname |
-| `db => port`     | Database port |
-| `db => dbname`   | Database name |
-| `db => username` | Database username |
-| `db => password` | Database password |
-| `db => logs`     | Default table name where logs are stored |
+| `USERNAME`       | This is the username for the basic HTTP auth |
+| `PASSWWORD`       | This is the password for the basic HTTP auth |
+| `MODE`           | Selected mode to save logs (`csv`, `log`, `sql`) |
+| `DIRPATH`        | Directory where `csv` and `log` files are stored  |
+| `DB_`             | Database options  |
+| `DB_MODE`     | Select either `mysql` or `pgsql` |
+| `DB_HOST`     | Database hostname |
+| `DB_PORT`     | Database port |
+| `DB_NAME`   | Database name |
+| `DB_USERNAME` | Database username |
+| `DB_PASSWORD` | Database password |
+| `DB_LOGS`     | Default table name where logs are stored |
 
 ### Deploy on your Clever Cloud app
 - Create a PHP app using Git (not SFTP)
