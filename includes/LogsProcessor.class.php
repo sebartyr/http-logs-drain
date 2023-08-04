@@ -67,17 +67,20 @@ class LogsProcessor
         $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv', "a+");
         $lock = new Lock($f);
 
+        $no_error = true;
+
         if($lock->lock())
         {
             foreach($this->logs->getLogs() as $logs)
             {
                 if(!fputcsv($f, $logs, ';'))
                 {
-                    return false;
+                    syslog(LOG_ERR, "Error: writeCSVFile");
+                    $no_error = false;
                 }
             }
 
-            return $lock->unlock() && fclose($f);
+            return $lock->unlock() && fclose($f) && $no_error;
         }
 
         syslog(LOG_ERR, "Error: writeCSVFile");
@@ -108,16 +111,19 @@ class LogsProcessor
         $logs = $this->logs->getLogs();
         $table = (isset($_GET['table']) && !empty($_GET['table']))?$_GET['table']:DB_TABLE;
 
+        $no_error = true;
+
+        $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
+
         foreach($logs as $l)
         {
-            $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
             if(!($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) && $req->closeCursor())) 
             {
                 syslog(LOG_ERR, "Error: writeSQL");
-                return false;
+                $no_error = false;
             }
         }
         
-        return true;
+        return $no_error;
     }
 }
