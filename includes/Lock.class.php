@@ -11,9 +11,9 @@ class Lock
         $this->uri = stream_get_meta_data($fd)['uri'];
     }
 
-    public function lock() : bool
+    public function lock(int $retry = 3) : bool
     {
-        for($i = 0; $i < 3; $i++)
+        for($i = 0; $i < $retry; $i++)
         {
             while(file_exists($this->uri.'.lock'))
             {
@@ -22,7 +22,7 @@ class Lock
 
             if($this->has_lock = link($this->uri, $this->uri.'.lock')) break;
         }
-        
+
         return $this->has_lock;
     }
 
