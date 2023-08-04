@@ -11,14 +11,18 @@ class Lock
         $this->uri = stream_get_meta_data($fd)['uri'];
     }
 
-    public function lock() : bool
+    public function lock(int $retry = 3) : bool
     {
-        while(file_exists($this->uri.'.lock'))
+        for($i = 0; $i < $retry; $i++)
         {
-            usleep(1000);
+            while(file_exists($this->uri.'.lock'))
+            {
+                usleep(1000);
+            }
+
+            if($this->has_lock = link($this->uri, $this->uri.'.lock')) break;
         }
 
-        $this->has_lock = link($this->uri, $this->uri.'.lock');
         return $this->has_lock;
     }
 
@@ -37,5 +41,10 @@ class Lock
 
         syslog(LOG_ERR, "Error with file unlocking");
         return false;
+    }
+
+    public function __destruct()
+    {
+        if($this->hasLock()) unlink($this->uri.'.lock');
     }
 }
