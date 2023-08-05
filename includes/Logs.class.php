@@ -6,12 +6,11 @@ class Logs
     private string $raw_logs;
     private array $logs;
 
-    public function __construct(string $raw_logs)
+    public function __construct(string $raw_logs = "")
     {
-        $this->logs = [];
         $this->raw_logs = $raw_logs;
 
-        $this->logs = $this->convertRawLogs();
+        if(!empty($raw_logs)) $this->logs = $this->convertRawLogs();
     }
 
     private function convertRawLogs() : array
@@ -42,6 +41,11 @@ class Logs
     public function getLogs() : array
     {
         return $this->logs;
+    }
+
+    public function setLogs(array $logs) : void
+    {
+        $this->logs = $logs;
     }
 
     public function toString() : string

@@ -9,28 +9,33 @@ class LogsProcessor
     private string $raw_logs;
     private Logs $logs;
     private string $mode;
+    private string $filename;
 
-    public function __construct(string $raw_logs, string $mode)
+    public function __construct(string $mode, string $raw_logs = "")
     {
         $this->raw_logs = $raw_logs;
         $this->mode = $mode;
-        $this->logs = $this->processRawLog();
+
+        if(!empty($raw_logs)) $this->logs = new Logs($this->raw_logs);
     }
 
-    private function processRawLog() : Logs
+    public function setLogs(array $logs) : void
     {
-        $logs = new Logs($this->raw_logs);
-
-        return $logs;
+        $this->logs = new Logs();
+        $this->logs->setLogs($logs);
     }
 
-    public function write() : bool
+    public function getFilename() : string
+    {
+        return $this->filename;
+    }
+
+    public function write($dirpath = DIRPATH) : bool
     {
         if($this->logs != NULL && $this->logs->isValidated())
         {
             $prefix = (isset($_GET['prefix']) && !empty($_GET['prefix']))?$_GET['prefix'].'-':"";
-
-            $dirpath = DIRPATH;
+            $dirpath = (isset($_GET['dirpath']) && !empty($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
 
             if(!empty($dirpath))
             {
@@ -64,7 +69,8 @@ class LogsProcessor
     
     private function writeCSVFile(string $dirpath, string $prefix) : bool
     {
-        $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv', "a+");
+        $this->filename = $dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv';
+        $f = fopen($this->filename, "a+");
         $lock = new Lock($f);
 
         $no_error = true;
@@ -89,7 +95,8 @@ class LogsProcessor
 
     private function writeLogFile(string $dirpath, string $prefix) : bool
     {
-        $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.log', "a+");
+        $this->filename = $dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv';
+        $f = fopen($this->filename, "a+");
         $lock = new Lock($f);
 
         if($lock->lock())

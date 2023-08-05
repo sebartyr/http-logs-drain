@@ -10,7 +10,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
     $post_content = file_get_contents('php://input');
     if(!empty($post_content))
     {
-        $lp = new LogsProcessor($post_content, MODE);
+        $lp = new LogsProcessor(MODE, $post_content);
         if($lp->write())
         {
             $message = 'Logs have been saved';
