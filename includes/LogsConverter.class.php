@@ -32,14 +32,14 @@ class LogsConverter
             $this->lp = new LogsProcessor($this->mode);
             $this->lp->setLogs($data);
             
-            $dirname = "../converted-logs";
-            $filename = 'converted-logs-'.date("Y-m-d-H:i:s");
+            $dirpath = "../converted-logs";
+            $filename = 'converted-logs-'.date("Y-m-d_H-i-s");
 
-            if($this->lp->write($dirname, "", $filename))
+            if($this->lp->write($dirpath, "", $filename))
             {
                 $proto = (!empty($_SERVER['https']))?"https":"http";
                 $port = ($_SERVER['SERVER_PORT'] != "80" || $_SERVER['SERVER_PORT'] != "443")?$_SERVER['SERVER_PORT']:"";
-                return $proto.'://'.$_SERVER['SERVER_NAME'].':'.$port.'/'.basename($dirname).'/'.$this->lp->getFilename();
+                return $proto.'://'.$_SERVER['SERVER_NAME'].':'.$port.'/'.basename($dirpath).'/'.$this->lp->getFilename();
             }
 
         }

@@ -34,34 +34,38 @@ class LogsProcessor
     public function write($dirpath = DIRPATH, $prefix = "", $filename = "") : bool
     {
         if($this->logs != NULL && $this->logs->isValidated())
-        {
-            $prefix = (isset($_GET['prefix']) && Tools::isValidName($_GET['prefix']))?$_GET['prefix'].'-':$prefix;
-            $dirpath = (isset($_GET['dirpath']) && Tools::isValidName($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
-            $filename = (isset($_GET['filename']) && Tools::isValidName($_GET['filename']))?$_GET['filename']:$filename;
-
-            if(!empty($dirpath))
+        {    
+            if($this->mode != 'sql')
             {
-                if(!is_dir($dirpath))
+                $prefix = (isset($_GET['prefix']) && Tools::isValidName($_GET['prefix']))?$_GET['prefix'].'-':$prefix;
+                $dirpath = (isset($_GET['dirpath']) && Tools::isValidName($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
+                $filename = (isset($_GET['filename']) && Tools::isValidName($_GET['filename']))?$_GET['filename']:$filename;
+
+                if(!empty($dirpath))
                 {
-                    if(!mkdir($dirpath, recursive:true)) return false;
+                    if(!is_dir($dirpath))
+                    {
+                        if(!mkdir($dirpath, recursive:true)) return false;
+                    }
                 }
-            }
-            else
-            {
-                $dirpath = ".";
-            }
+                else
+                {
+                    $dirpath = ".";
+                }
 
-            switch($this->mode)
-            {
+                switch($this->mode)
+                {
                 case "log":
                     return $this->writeLogFile($dirpath, $prefix, (!empty($filename))?$filename.'.log':'logs-'.date("Y-m-d").'.log');
                     break;
                 case "csv":
                     return $this->writeCSVFile($dirpath, $prefix, (!empty($filename))?$filename.'.csv':'logs-'.date("Y-m-d").'.csv');
                     break;
-                case "sql":
-                    return $this->writeSQL();
-                    break;
+                }
+            }
+            else
+            {
+                return $this->writeSQL();
             }
         }
 
