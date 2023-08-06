@@ -27,14 +27,14 @@ SET time_zone = "+00:00";
 -- Structure de la table `logs`
 --
 
-DROP TABLE IF EXISTS `logs2`;
-CREATE TABLE IF NOT EXISTS `logs2` (
+DROP TABLE IF EXISTS `logs`;
+CREATE TABLE IF NOT EXISTS `logs` (
   `id` varchar(16) NOT NULL,
   `date` varchar(255) NOT NULL,
   `instanceId` varchar(255) NOT NULL,
   `logsInfo` text NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `date` (`date`,`instanceId`) USING BTREE
+  KEY `date` (`date`) USING BTREE
 ) ENGINE=InnoDB;
 COMMIT;
 
