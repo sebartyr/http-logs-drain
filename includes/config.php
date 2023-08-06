@@ -2,7 +2,7 @@
 define("USERNAME", "sebartyr");
 define("PASSWORD", "azerty");
 
-define("MODE", "csv");
+define("MODE", "sql");
 
 define("DIRPATH", "test");
 
