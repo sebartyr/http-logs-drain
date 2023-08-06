@@ -22,7 +22,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
     {
         $message = 'Logs have been converted';
         syslog(LOG_INFO, $message);
-        //echo '{"state": "'.$message.'", "link": "'.$lc->convert().'"}';
+        echo '{"state": "'.$message.'", "link": "'.$lc->convert().'"}';
     }
     else
     {
