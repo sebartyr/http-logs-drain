@@ -1,6 +1,7 @@
 <?php
 require_once('Logs.class.php');
 require_once('Lock.class.php');
+require_once('Tools.class.php');
 require_once('config.php');
 
 class LogsProcessor
@@ -30,12 +31,13 @@ class LogsProcessor
         return $this->filename;
     }
 
-    public function write($dirpath = DIRPATH) : bool
+    public function write($dirpath = DIRPATH, $prefix = "", $filename = "") : bool
     {
         if($this->logs != NULL && $this->logs->isValidated())
         {
-            $prefix = (isset($_GET['prefix']) && !empty($_GET['prefix']))?$_GET['prefix'].'-':"";
-            $dirpath = (isset($_GET['dirpath']) && !empty($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
+            $prefix = (isset($_GET['prefix']) && Tools::isValidName($_GET['prefix']))?$_GET['prefix'].'-':$prefix;
+            $dirpath = (isset($_GET['dirpath']) && Tools::isValidName($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
+            $filename = (isset($_GET['filename']) && Tools::isValidName($_GET['filename']))?$_GET['filename']:$filename;
 
             if(!empty($dirpath))
             {
@@ -52,10 +54,10 @@ class LogsProcessor
             switch($this->mode)
             {
                 case "log":
-                    return $this->writeLogFile($dirpath, $prefix);
+                    return $this->writeLogFile($dirpath, $prefix, (!empty($filename))?$filename.'.log':'logs-'.date("Y-m-d").'.log');
                     break;
                 case "csv":
-                    return $this->writeCSVFile($dirpath, $prefix);
+                    return $this->writeCSVFile($dirpath, $prefix, (!empty($filename))?$filename.'.csv':'logs-'.date("Y-m-d").'.csv');
                     break;
                 case "sql":
                     return $this->writeSQL();
@@ -67,10 +69,11 @@ class LogsProcessor
         return false;
     }
     
-    private function writeCSVFile(string $dirpath, string $prefix) : bool
+    private function writeCSVFile(string $dirpath, string $prefix, string $filename) : bool
     {
-        $this->filename = $dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv';
-        $f = fopen($this->filename, "a+");
+        $this->filename = $filename;
+        $filepath = $dirpath.'/'.$prefix.$filename;
+        $f = fopen($filepath, "a+");
         $lock = new Lock($f);
 
         $no_error = true;
@@ -93,10 +96,11 @@ class LogsProcessor
         return false;
     }
 
-    private function writeLogFile(string $dirpath, string $prefix) : bool
+    private function writeLogFile(string $dirpath, string $prefix, string $filename) : bool
     {
-        $this->filename = $dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv';
-        $f = fopen($this->filename, "a+");
+        $this->filename = $filename;
+        $filepath = $dirpath.'/'.$prefix.$filename;
+        $f = fopen($filepath, "a+");
         $lock = new Lock($f);
 
         if($lock->lock())
@@ -113,18 +117,18 @@ class LogsProcessor
 
     private function writeSQL() : bool
     {
-        require_once('db_connect.php');
+        require('db_connect.php');
 
         $logs = $this->logs->getLogs();
-        $table = (isset($_GET['table']) && !empty($_GET['table']))?$_GET['table']:DB_TABLE;
+        $table = (isset($_GET['table']) && Tools::isValidName($_GET['table']))?$_GET['table']:DB_TABLE;
 
         $no_error = true;
 
-        $req = $bdd->prepare('INSERT INTO :table(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
+        $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
 
         foreach($logs as $l)
         {
-            if(!($req->execute(array("table" => $table, "id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) && $req->closeCursor())) 
+            if(!($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) && $req->closeCursor())) 
             {
                 syslog(LOG_ERR, "Error: writeSQL");
                 $no_error = false;
