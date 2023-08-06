@@ -38,7 +38,7 @@ class LogsConverter
             if($this->lp->write($dirpath, "", $filename))
             {
                 $proto = (!empty($_SERVER['https']))?"https":"http";
-                $port = ($_SERVER['SERVER_PORT'] != 80 || $_SERVER['SERVER_PORT'] != 443)?$_SERVER['SERVER_PORT']:"";
+                $port = ($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)?$_SERVER['SERVER_PORT']:"";
                 return $proto.'://'.$_SERVER['SERVER_NAME'].':'.$port.'/'.basename($dirpath).'/'.$this->lp->getFilename();
             }
 
