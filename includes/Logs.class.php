@@ -16,7 +16,7 @@ class Logs
     private function convertRawLogs() : array
     {
         $logs = [];
-        if(preg_match_all("/^.*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z).*instanceid=\"([a-z0-9-]+)\".*\] (.*)$/m", $this->raw_logs, $m, PREG_SET_ORDER))
+        if(preg_match_all("/^.*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z).*instanceId=\"([a-z0-9-]+)\".*\] (.*)$/m", $this->raw_logs, $m, PREG_SET_ORDER))
         {
             foreach($m as $t)
             {
