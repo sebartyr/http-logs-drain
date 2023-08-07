@@ -28,7 +28,7 @@ class LogsConverter
 
         $req = $bdd->prepare('SELECT date, instanceId, logsInfo FROM '.$this->table.' WHERE date > :date_after AND date < :date_before ORDER BY date ASC');
         $req->execute(array("date_after" => $date_after, "date_before" => $date_before));
-        if($data = $req->fetchAll())
+        if($data = $req->fetchAll(PDO::FETCH_ASSOC))
         {
             $this->lp = new LogsProcessor($this->mode);
             $this->lp->setLogs($data);

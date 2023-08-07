@@ -9,6 +9,7 @@ class Lock
     public function __construct($fd)
     {
         $this->uri = stream_get_meta_data($fd)['uri'];
+        $this->has_lock = false;
     }
 
     public function lock(int $retry = 3) : bool
