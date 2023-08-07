@@ -1,5 +1,6 @@
 <?php
 require_once('LogsProcessor.class.php');
+require_once('Tools.class.php');
 
 class LogsConverter
 {
@@ -14,8 +15,8 @@ class LogsConverter
     {
         $this->mode = $mode;
         $this->table = $table;
-        $this->date_before = ($this->isValidDate($date_before))?$date_before:"";
-        $this->date_after = ($this->isValidDate($date_after))?$date_after:"";;
+        $this->date_before = (Tools::isValidDate($date_before))?$date_before:"";
+        $this->date_after = (Tools::isValidDate($date_after))?$date_after:"";;
     }
 
     public function convert() : string
@@ -46,10 +47,5 @@ class LogsConverter
 
         syslog(LOG_ERR, "Error: converting logs");
         return "";
-    }
-
-    private function isValidDate(string $date) : bool
-    {
-        return preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$/", $date);
     }
 }
