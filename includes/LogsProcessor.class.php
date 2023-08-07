@@ -128,11 +128,11 @@ class LogsProcessor
 
         $no_error = true;
 
-        $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
+        $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceid, logsinfo) VALUES(:id, :date, :instanceid, :logsinfo)');
 
         foreach($logs as $l)
         {
-            if(!($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) && $req->closeCursor())) 
+            if(!($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceid' => $l['instanceid'], "logsinfo" => $l['logsinfo'])) && $req->closeCursor())) 
             {
                 syslog(LOG_ERR, "Error: writeSQL");
                 $no_error = false;

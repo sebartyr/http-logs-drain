@@ -6,10 +6,10 @@ define("MODE", "sql");
 
 define("DIRPATH", "test");
 
-define("DB_MODE", "mysql");
-define("DB_HOST", getenv("MYSQL_ADDON_HOST"));
-define("DB_PORT", getenv("MYSQL_ADDON_PORT"));
-define("DB_NAME", getenv("MYSQL_ADDON_DB"));
-define("DB_USERNAME", getenv("MYSQL_ADDON_USER"));
-define("DB_PASSWORD", getenv("MYSQL_ADDON_PASSWORD"));
+define("DB_MODE", "pgsql");
+define("DB_HOST", getenv("POSTGRESQL_ADDON_HOST"));
+define("DB_PORT", getenv("POSTGRESQL_ADDON_PORT"));
+define("DB_NAME", getenv("POSTGRESQL_ADDON_DB"));
+define("DB_USERNAME", getenv("POSTGRESQL_ADDON_USER"));
+define("DB_PASSWORD", getenv("POSTGRESQL_ADDON_PASSWORD"));
 define("DB_TABLE", "logs");

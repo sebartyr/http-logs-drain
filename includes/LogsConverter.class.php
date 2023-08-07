@@ -26,7 +26,7 @@ class LogsConverter
         $date_after = (!empty($this->date_after))?$this->date_after:'1900-01-01T00:00:00.000Z';
         $date_before = (!empty($this->date_before))?$this->date_before:'9999-12-31T23:59:59.999Z';
 
-        $req = $bdd->prepare('SELECT date, instanceId, logsInfo FROM '.$this->table.' WHERE date > :date_after AND date < :date_before ORDER BY date ASC');
+        $req = $bdd->prepare('SELECT date, instanceid, logsinfo FROM '.$this->table.' WHERE date > :date_after AND date < :date_before ORDER BY date ASC');
         $req->execute(array("date_after" => $date_after, "date_before" => $date_before));
         if($data = $req->fetchAll(PDO::FETCH_ASSOC))
         {
@@ -41,6 +41,10 @@ class LogsConverter
                 $proto = (!empty($_SERVER['https']))?"https":"http";
                 $port = ($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)?':'.$_SERVER['SERVER_PORT']:"";
                 return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/'.basename($dirpath).'/'.$this->lp->getFilename();
+            }
+            else
+            {
+                echo 'KO';
             }
 
         }

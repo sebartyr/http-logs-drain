@@ -16,11 +16,11 @@ class Logs
     private function convertRawLogs() : array
     {
         $logs = [];
-        if(preg_match_all("/^.*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z).*instanceId=\"([a-z0-9-]+)\".*\] (.*)$/m", $this->raw_logs, $m, PREG_SET_ORDER))
+        if(preg_match_all("/^.*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z).*instanceid=\"([a-z0-9-]+)\".*\] (.*)$/m", $this->raw_logs, $m, PREG_SET_ORDER))
         {
             foreach($m as $t)
             {
-                $logs[] = ['date' => $t[1], 'instanceId' => $t[2], 'logsInfo' => $t[3]];
+                $logs[] = ['date' => $t[1], 'instanceid' => $t[2], 'logsinfo' => $t[3]];
             }
         }
         
@@ -32,7 +32,7 @@ class Logs
         $v = true;
         foreach($this->logs as $logs)
         {
-            $v = $v && (!empty($logs["date"]) && !empty($logs["instanceId"]) && !empty($logs["logsInfo"]));
+            $v = $v && (!empty($logs["date"]) && !empty($logs["instanceid"]) && !empty($logs["logsinfo"]));
         }
 
         return $v;
@@ -54,7 +54,7 @@ class Logs
 
         foreach($this->logs as $logs)
         {
-            $s .= '('.$logs["instanceId"].') '.$logs["date"].' '.$logs["logsInfo"]."\n";
+            $s .= '('.$logs["instanceid"].') '.$logs["date"].' '.$logs["logsinfo"]."\n";
         }
 
         return $s;
