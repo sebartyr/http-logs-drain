@@ -63,6 +63,9 @@ Configure the tool in `includes/config.php`
 ### Convert logs stored in DB
 
 
+### Delete logs stored in DB
+
+
 
 ### More configuration...
 

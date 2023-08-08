@@ -1,6 +1,7 @@
 <?php
 require_once('LogsProcessor.class.php');
 require_once('Tools.class.php');
+require_once('config.php');
 
 class LogsConverter
 {
