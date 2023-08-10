@@ -35,7 +35,6 @@ class LogsProcessor
     {
         if($this->logs != NULL && $this->logs->isValidated())
         {    
-            echo 'OK';
             if($this->mode != 'sql')
             {
                 $prefix = (isset($_GET['prefix']) && Tools::isValidName($_GET['prefix']))?$_GET['prefix'].'-':$prefix;
