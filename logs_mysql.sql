@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS `logs` (
   `logsinfo` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `date` (`date`) USING BTREE
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;;
 COMMIT;
