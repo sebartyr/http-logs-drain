@@ -10,7 +10,7 @@ if (!isset($_SERVER['PHP_AUTH_USER'])
 
     header('WWW-Authenticate: Basic realm="HTTP-LOGS-DRAIN"');
     header('HTTP/1.1 401 Unauthorized');
-    syslog(LOG_ERR, 'HTTP/1.1 401 Unauthorized');
+    //syslog(LOG_ERR, 'HTTP/1.1 401 Unauthorized');
     echo 'HTTP/1.1 401 Unauthorized';
     exit;
 }
