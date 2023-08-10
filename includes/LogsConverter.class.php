@@ -27,27 +27,40 @@ class LogsConverter
         $date_after = (!empty($this->date_after))?$this->date_after:'1900-01-01T00:00:00.000Z';
         $date_before = (!empty($this->date_before))?$this->date_before:'9999-12-31T23:59:59.999Z';
 
-        $req = $bdd->prepare('SELECT date, instanceid, logsinfo FROM '.$this->table.' WHERE date > :date_after AND date < :date_before ORDER BY date ASC');
-        $req->execute(array("date_after" => $date_after, "date_before" => $date_before));
-        if($data = $req->fetchAll(PDO::FETCH_ASSOC))
+
+        try
         {
-            $this->lp = new LogsProcessor($this->mode);
-            $this->lp->setLogs($data);
-            
-            $dirpath = "../converted-logs";
-            $filename = 'converted-logs-'.date("Y-m-d_H-i-s");
-
-            if($this->lp->write($dirpath, "", $filename))
+            switch(DB_MODE)
             {
-                $proto = (!empty($_SERVER['https']))?"https":"http";
-                $port = ($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)?':'.$_SERVER['SERVER_PORT']:"";
-                return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/'.basename($dirpath).'/'.$this->lp->getFilename();
-            }
-            else
-            {
-                echo 'KO';
+                case "pgsql":
+                    $req_string = 'SELECT "date", "instanceid", "logsinfo" FROM "'.$this->table.'" WHERE "date" > :date_after AND "date" < :date_before ORDER BY "date" ASC';
+                    break;
+                default:
+                    $req_string = 'SELECT `date`, `instanceid`, `logsinfo` FROM `'.$this->table.'` WHERE `date` > :date_after AND `date` < :date_before ORDER BY `date` ASC';
             }
 
+            $req = $bdd->prepare($req_string);
+            $req->execute(array("date_after" => $date_after, "date_before" => $date_before));
+            if($data = $req->fetchAll(PDO::FETCH_ASSOC))
+            {
+                $this->lp = new LogsProcessor($this->mode);
+                $this->lp->setLogs($data);
+                
+                $dirpath = "../converted-logs";
+                $filename = 'converted-logs-'.date("Y-m-d_H-i-s");
+
+                if($this->lp->write($dirpath, "", $filename))
+                {
+                    $proto = (!empty($_SERVER['https']))?"https":"http";
+                    $port = ($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)?':'.$_SERVER['SERVER_PORT']:"";
+                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/'.basename($dirpath).'/'.$this->lp->getFilename();
+                }
+
+            }
+        }
+        catch(Exception $e)
+        {
+            syslog(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
 
         syslog(LOG_ERR, "Error: converting logs");

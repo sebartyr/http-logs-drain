@@ -131,7 +131,16 @@ class LogsProcessor
 
         try
         {
-            $req = $bdd->prepare('INSERT INTO `'.$table.'`(`id`, `date`, `instanceid`, `logsinfo`) VALUES(:id, :date, :instanceid, :logsinfo)');
+            switch(DB_MODE)
+            {
+                case "pgsql":
+                    $req_string = 'INSERT INTO "'.$table.'"("id", "date", "instanceid", "logsinfo") VALUES(:id, :date, :instanceid, :logsinfo)';
+                    break;
+                default:
+                    $req_string = 'INSERT INTO `'.$table.'`(`id`, `date`, `instanceid`, `logsinfo`) VALUES(:id, :date, :instanceid, :logsinfo)';
+            }
+            
+            $req = $bdd->prepare($req_string);
 
             foreach($logs as $l)
             {
