@@ -131,7 +131,7 @@ class LogsProcessor
 
         try
         {
-            $req = $bdd->prepare('INSERT INTO `'.$table.'`(`id`, `date`, `instanceid`, `logsinfo`) VALUES(`:id`, `:date`, `:instanceid`, `:logsinfo`)');
+            $req = $bdd->prepare('INSERT INTO `'.$table.'`(`id`, `date`, `instanceid`, `logsinfo`) VALUES(:id, :date, :instanceid, :logsinfo)');
 
             foreach($logs as $l)
             {
