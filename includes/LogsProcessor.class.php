@@ -129,15 +129,22 @@ class LogsProcessor
 
         $no_error = true;
 
-        $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceid, logsinfo) VALUES(:id, :date, :instanceid, :logsinfo)');
-
-        foreach($logs as $l)
+        try
         {
-            if(!($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceid' => $l['instanceid'], "logsinfo" => $l['logsinfo'])) && $req->closeCursor())) 
+            $req = $bdd->prepare('INSERT INTO `'.$table.'`(`id`, `date`, `instanceid`, `logsinfo`) VALUES(`:id`, `:date`, `:instanceid`, `:logsinfo`)');
+
+            foreach($logs as $l)
             {
-                syslog(LOG_ERR, "Error: writeSQL");
-                $no_error = false;
+                if(!($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceid' => $l['instanceid'], "logsinfo" => $l['logsinfo'])) && $req->closeCursor())) 
+                {
+                    syslog(LOG_ERR, "Error: writeSQL");
+                    $no_error = false;
+                }
             }
+        }
+        catch(Exception $e)
+        {
+            syslog(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
         
         return $no_error;
