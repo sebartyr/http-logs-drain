@@ -1,6 +1,7 @@
 <?php
 require_once('Logs.class.php');
 require_once('Lock.class.php');
+require_once('Tools.class.php');
 require_once('config.php');
 
 class LogsProcessor
@@ -9,52 +10,62 @@ class LogsProcessor
     private string $raw_logs;
     private Logs $logs;
     private string $mode;
+    private string $filename;
 
-    public function __construct(string $raw_logs, string $mode)
+    public function __construct(string $mode, string $raw_logs = "")
     {
         $this->raw_logs = $raw_logs;
         $this->mode = $mode;
-        $this->logs = $this->processRawLog();
+
+        if(!empty($raw_logs)) $this->logs = new Logs($this->raw_logs);
     }
 
-    private function processRawLog() : Logs
+    public function setLogs(array $logs) : void
     {
-        $logs = new Logs($this->raw_logs);
-
-        return $logs;
+        $this->logs = new Logs();
+        $this->logs->setLogs($logs);
     }
 
-    public function write() : bool
+    public function getFilename() : string
+    {
+        return $this->filename;
+    }
+
+    public function write($dirpath = DIRPATH, $prefix = "", $filename = "") : bool
     {
         if($this->logs != NULL && $this->logs->isValidated())
-        {
-            $prefix = (isset($_GET['prefix']) && !empty($_GET['prefix']))?$_GET['prefix'].'-':"";
-
-            $dirpath = DIRPATH;
-
-            if(!empty($dirpath))
+        {    
+            if($this->mode != 'sql')
             {
-                if(!is_dir($dirpath))
+                $prefix = (isset($_GET['prefix']) && Tools::isValidName($_GET['prefix']))?$_GET['prefix'].'-':$prefix;
+                $dirpath = (isset($_GET['dirpath']) && Tools::isValidName($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
+                $filename = (isset($_GET['filename']) && Tools::isValidName($_GET['filename']))?$_GET['filename']:$filename;
+
+                if(!empty($dirpath))
                 {
-                    if(!mkdir($dirpath, recursive:true)) return false;
+                    if(!is_dir($dirpath))
+                    {
+                        if(!mkdir($dirpath, recursive:true)) return false;
+                    }
+                }
+                else
+                {
+                    $dirpath = ".";
+                }
+
+                switch($this->mode)
+                {
+                case "log":
+                    return $this->writeLogFile($dirpath, $prefix, (!empty($filename))?$filename.'.log':'logs-'.date("Y-m-d").'.log');
+                    break;
+                case "csv":
+                    return $this->writeCSVFile($dirpath, $prefix, (!empty($filename))?$filename.'.csv':'logs-'.date("Y-m-d").'.csv');
+                    break;
                 }
             }
             else
             {
-                $dirpath = ".";
-            }
-
-            switch($this->mode)
-            {
-                case "log":
-                    return $this->writeLogFile($dirpath, $prefix);
-                    break;
-                case "csv":
-                    return $this->writeCSVFile($dirpath, $prefix);
-                    break;
-                case "sql":
-                    return $this->writeSQL();
-                    break;
+                return $this->writeSQL();
             }
         }
 
@@ -62,9 +73,11 @@ class LogsProcessor
         return false;
     }
     
-    private function writeCSVFile(string $dirpath, string $prefix) : bool
+    private function writeCSVFile(string $dirpath, string $prefix, string $filename) : bool
     {
-        $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.csv', "a+");
+        $this->filename = $filename;
+        $filepath = $dirpath.'/'.$prefix.$filename;
+        $f = fopen($filepath, "a+");
         $lock = new Lock($f);
 
         $no_error = true;
@@ -87,9 +100,11 @@ class LogsProcessor
         return false;
     }
 
-    private function writeLogFile(string $dirpath, string $prefix) : bool
+    private function writeLogFile(string $dirpath, string $prefix, string $filename) : bool
     {
-        $f = fopen($dirpath.'/'.$prefix.'logs-'.date("Y-m-d").'.log', "a+");
+        $this->filename = $filename;
+        $filepath = $dirpath.'/'.$prefix.$filename;
+        $f = fopen($filepath, "a+");
         $lock = new Lock($f);
 
         if($lock->lock())
@@ -106,22 +121,38 @@ class LogsProcessor
 
     private function writeSQL() : bool
     {
-        require_once('db_connect.php');
+        require('db_connect.php');
 
         $logs = $this->logs->getLogs();
-        $table = (isset($_GET['table']) && !empty($_GET['table']))?$_GET['table']:DB_TABLE;
+        $table = (isset($_GET['table']) && Tools::isValidName($_GET['table']))?$_GET['table']:DB_TABLE;
 
         $no_error = true;
 
-        $req = $bdd->prepare('INSERT INTO '.$table.'(id, date, instanceId, logsInfo) VALUES(:id, :date, :instanceId, :logsInfo)');
-
-        foreach($logs as $l)
+        try
         {
-            if(!($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceId' => $l['instanceId'], "logsInfo" => $l['logsInfo'])) && $req->closeCursor())) 
+            switch(DB_MODE)
             {
-                syslog(LOG_ERR, "Error: writeSQL");
-                $no_error = false;
+                case "pgsql":
+                    $req_string = 'INSERT INTO "'.$table.'"("id", "date", "instanceid", "logsinfo") VALUES(:id, :date, :instanceid, :logsinfo)';
+                    break;
+                default:
+                    $req_string = 'INSERT INTO `'.$table.'`(`id`, `date`, `instanceid`, `logsinfo`) VALUES(:id, :date, :instanceid, :logsinfo)';
             }
+            
+            $req = $bdd->prepare($req_string);
+
+            foreach($logs as $l)
+            {
+                if(!($req->execute(array("id" => uniqid(), "date" => $l['date'], 'instanceid' => $l['instanceid'], "logsinfo" => $l['logsinfo'])) && $req->closeCursor())) 
+                {
+                    syslog(LOG_ERR, "Error: writeSQL");
+                    $no_error = false;
+                }
+            }
+        }
+        catch(Exception $e)
+        {
+            syslog(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
         
         return $no_error;

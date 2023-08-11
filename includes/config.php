@@ -1,8 +1,8 @@
 <?php
-define("USERNAME", "sebartyr");
-define("PASSWORD", "azerty");
+define("USERNAME", getenv("USERNAME"));
+define("PASSWORD", getenv("PASSWORD"));
 
-define("MODE", "csv");
+define("MODE", "sql");
 
 define("DIRPATH", "test");
 

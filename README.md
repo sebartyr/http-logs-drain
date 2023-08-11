@@ -57,6 +57,15 @@ Configure the tool in `includes/config.php`
 - You can add extra options in `<DRAIN-URL>`. It's useful when you want to store logs of multiple apps.
     - `https://<DRAIN-URL>/?table=<table_name>` to configure another table name than the provided one in `includes/config.php` (SQL mode)
     - `https://<DRAIN-URL>/?prefix=<your_prefix>` to configure a prefix to name text files (LOG or CSV mode).
+    - `https://<DRAIN-URL>/?dirpath=<your_dirpath>` to configure the dirpath where text files are stored (LOG or CSV mode).
+    - `https://<DRAIN-URL>/?filename=<your_filename>` to configure the filename of text files (LOG or CSV mode).
+
+### Convert logs stored in DB
+
+
+### Delete logs stored in DB
+
+
 
 ### More configuration...
 
