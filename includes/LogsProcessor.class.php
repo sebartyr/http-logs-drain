@@ -10,12 +10,18 @@ class LogsProcessor
     private string $raw_logs;
     private Logs $logs;
     private string $mode;
+    private string $prefix;
+    private string $dirpath;
     private string $filename;
 
     public function __construct(string $mode, string $raw_logs = "")
     {
         $this->raw_logs = $raw_logs;
         $this->mode = $mode;
+
+        $this->prefix = "";
+        $this->dirpath = "";
+        $this->filename = "";
 
         if(!empty($raw_logs)) $this->logs = new Logs($this->raw_logs);
     }
@@ -26,9 +32,14 @@ class LogsProcessor
         $this->logs->setLogs($logs);
     }
 
-    public function getFilename() : string
+    public function getFullFilename() : string
     {
-        return $this->filename;
+        return $this->prefix.$this->filename;
+    }
+
+    public function getDirpath() : string
+    {
+        return $this->dirpath;
     }
 
     public function write($dirpath = DIRPATH, $prefix = "", $filename = "") : bool
@@ -37,29 +48,33 @@ class LogsProcessor
         {    
             if($this->mode != 'sql')
             {
-                $prefix = (isset($_GET['prefix']) && Tools::isValidName($_GET['prefix']))?$_GET['prefix'].'-':$prefix;
-                $dirpath = (isset($_GET['dirpath']) && Tools::isValidName($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
+                $this->prefix = (isset($_GET['prefix']) && Tools::isValidName($_GET['prefix']))?$_GET['prefix'].'-':$prefix;
+                $this->dirpath = (isset($_GET['dirpath']) && Tools::isValidName($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
+                
                 $filename = (isset($_GET['filename']) && Tools::isValidName($_GET['filename']))?$_GET['filename']:$filename;
+                $this->filename = (!empty($filename))?$filename:'logs-'.date("Y-m-d");
 
-                if(!empty($dirpath))
+                if(!empty($this->dirpath))
                 {
-                    if(!is_dir($dirpath))
+                    if(!is_dir($this->dirpath))
                     {
-                        if(!mkdir($dirpath, recursive:true)) return false;
+                        if(!mkdir($this->dirpath, recursive:true)) return false;
                     }
                 }
                 else
                 {
-                    $dirpath = ".";
+                    $this->dirpath = ".";
                 }
 
                 switch($this->mode)
                 {
                 case "log":
-                    return $this->writeLogFile($dirpath, $prefix, (!empty($filename))?$filename.'.log':'logs-'.date("Y-m-d").'.log');
+                    $this->filename .= '.log';
+                    return $this->writeLogFile();
                     break;
                 case "csv":
-                    return $this->writeCSVFile($dirpath, $prefix, (!empty($filename))?$filename.'.csv':'logs-'.date("Y-m-d").'.csv');
+                    $this->filename .= '.csv';
+                    return $this->writeCSVFile();
                     break;
                 }
             }
@@ -73,10 +88,9 @@ class LogsProcessor
         return false;
     }
     
-    private function writeCSVFile(string $dirpath, string $prefix, string $filename) : bool
-    {
-        $this->filename = $filename;
-        $filepath = $dirpath.'/'.$prefix.$filename;
+    private function writeCSVFile() : bool
+    {;
+        $filepath = $this->dirpath.'/'.$this->getFullFilename();
         $f = fopen($filepath, "a+");
         $lock = new Lock($f);
 
@@ -100,10 +114,9 @@ class LogsProcessor
         return false;
     }
 
-    private function writeLogFile(string $dirpath, string $prefix, string $filename) : bool
+    private function writeLogFile() : bool
     {
-        $this->filename = $filename;
-        $filepath = $dirpath.'/'.$prefix.$filename;
+        $filepath = $this->dirpath.'/'.$this->getFullFilename();
         $f = fopen($filepath, "a+");
         $lock = new Lock($f);
 

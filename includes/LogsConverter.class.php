@@ -1,12 +1,9 @@
 <?php
 require_once('LogsProcessor.class.php');
-require_once('Tools.class.php');
 require_once('config.php');
 
 class LogsConverter
 {
-
-    private LogsProcessor $lp;
     private string $mode;
     private string $table;
     private string $date_before;
@@ -16,8 +13,8 @@ class LogsConverter
     {
         $this->mode = $mode;
         $this->table = $table;
-        $this->date_before = (Tools::isValidDate($date_before))?$date_before:"";
-        $this->date_after = (Tools::isValidDate($date_after))?$date_after:"";;
+        $this->date_before = $date_before;
+        $this->date_after = $date_after;
     }
 
     public function convert() : string
@@ -43,17 +40,17 @@ class LogsConverter
             $req->execute(array("date_after" => $date_after, "date_before" => $date_before));
             if($data = $req->fetchAll(PDO::FETCH_ASSOC))
             {
-                $this->lp = new LogsProcessor($this->mode);
-                $this->lp->setLogs($data);
-                
+                $lp = new LogsProcessor($this->mode);
+                $lp->setLogs($data);
+
                 $dirpath = "../converted-logs";
                 $filename = 'converted-logs-'.date("Y-m-d_H-i-s");
 
-                if($this->lp->write($dirpath, "", $filename))
+                if($lp->write($dirpath, "", $filename))
                 {
                     $proto = (!empty($_SERVER['https']))?"https":"http";
                     $port = ($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)?':'.$_SERVER['SERVER_PORT']:"";
-                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/'.basename($dirpath).'/'.$this->lp->getFilename();
+                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/'.basename($lp->getDirpath()).'/'.$lp->getFullFilename();
                 }
 
             }
@@ -63,7 +60,7 @@ class LogsConverter
             syslog(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
 
-        syslog(LOG_ERR, "Error: converting logs");
+        syslog(LOG_ERR, "Error: cannot convert logs");
         return "";
     }
 }

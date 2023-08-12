@@ -11,8 +11,8 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
 {
     $mode = (isset($_GET['mode']) && !empty($_GET['mode']))?$_GET['mode']:"log";
     $table = (isset($_GET['table']) && Tools::isValidName($_GET['table']))?$_GET['table']:DB_TABLE;
-    $date_before = (isset($_GET['before']) && !empty($_GET['before']))?$_GET['before']:"";
-    $date_after = (isset($_GET['after']) && !empty($_GET['after']))?$_GET['after']:"";
+    $date_before = (isset($_GET['before']) && Tools::isValidDate($_GET['before']))?$_GET['before']:"";
+    $date_after = (isset($_GET['after']) && Tools::isValidDate($_GET['after']))?$_GET['after']:"";
 
     $lc = new LogsConverter($mode, $table, $date_before, $date_after);
 
