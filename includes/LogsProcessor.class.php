@@ -48,10 +48,10 @@ class LogsProcessor
         {    
             if($this->mode != 'sql')
             {
-                $this->prefix = (isset($_GET['prefix']) && Tools::isValidName($_GET['prefix']))?$_GET['prefix'].'-':$prefix;
-                $this->dirpath = (isset($_GET['dirpath']) && Tools::isValidName($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
+                $this->prefix = (isset($_GET['prefix']) && Tools::isValidFilename($_GET['prefix']))?$_GET['prefix'].'-':$prefix;
+                $this->dirpath = (isset($_GET['dirpath']) && Tools::isValidDirpath($_GET['dirpath']))?$_GET['dirpath']:$dirpath;
                 
-                $filename = (isset($_GET['filename']) && Tools::isValidName($_GET['filename']))?$_GET['filename']:$filename;
+                $filename = (isset($_GET['filename']) && Tools::isValidFilename($_GET['filename']))?$_GET['filename']:$filename;
                 $this->filename = (!empty($filename))?$filename:'logs-'.date("Y-m-d");
 
                 if(!empty($this->dirpath))
@@ -137,7 +137,7 @@ class LogsProcessor
         require('db_connect.php');
 
         $logs = $this->logs->getLogs();
-        $table = (isset($_GET['table']) && Tools::isValidName($_GET['table']))?$_GET['table']:DB_TABLE;
+        $table = (isset($_GET['table']) && Tools::isValidTableName($_GET['table']))?$_GET['table']:DB_TABLE;
 
         $no_error = true;
 
