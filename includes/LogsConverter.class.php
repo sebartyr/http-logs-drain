@@ -50,7 +50,7 @@ class LogsConverter
                 {
                     $proto = (!empty($_SERVER['https']))?"https":"http";
                     $port = ($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)?':'.$_SERVER['SERVER_PORT']:"";
-                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/'.pathinfo($lp->getDirpath())['dirname'].'/'.$lp->getFullFilename();
+                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/'.str_replace('../', '', $lp->getDirpath()).'/'.$lp->getFullFilename();
                 }
 
             }
