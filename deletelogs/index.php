@@ -18,7 +18,7 @@ if($_SERVER['REQUEST_METHOD'] == 'DELETE')
     {
         $message = 'Logs have been deleted';
         syslog(LOG_INFO, $message);
-        echo '{"state": "'.$message.'", "number of deleted rows": "'.$le->getNbDeletedRow().'"}';
+        echo '{"status": "'.$message.'", "number of deleted rows": "'.$le->getNbDeletedRow().'"}';
     }
     else
     {
