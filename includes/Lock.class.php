@@ -21,7 +21,7 @@ class Lock
     {
         for($i = 0; $i < $retry; $i++)
         {
-            while(file_exists($this->uri.'.lock'))
+            while(file_exists($this->lock_uri))
             {
                 usleep(1000);
             }
