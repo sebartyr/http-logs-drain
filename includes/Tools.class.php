@@ -1,9 +1,19 @@
 <?php
 class Tools
 {
-    public static function isValidName(string $name) : bool
+    public static function isValidFilename(string $name) : bool
     {
         return (preg_match("/^[a-zA-Z0-9-_.]+$/", $name));
+    }
+
+    public static function isValidTableName(string $name) : bool
+    {
+        return (preg_match("/^[a-zA-Z0-9-_]+$/", $name));
+    }
+
+    public static function isValidDirpath(string $name) : bool
+    {
+        return (preg_match("/^[a-zA-Z0-9-_\/]+$/", $name));
     }
 
     public static function isValidDate(string $date) : bool

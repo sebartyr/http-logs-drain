@@ -4,11 +4,16 @@ class Lock
 {
 
     private string $uri;
+    private string $lock_uri;
     private bool $has_lock;
 
     public function __construct($fd)
     {
         $this->uri = stream_get_meta_data($fd)['uri'];
+
+        $pathinfo = pathinfo($this->uri);
+        $this->lock_uri = $pathinfo['dirname'].'/.'.$pathinfo['basename'].'.lock';
+
         $this->has_lock = false;
     }
 
@@ -16,12 +21,12 @@ class Lock
     {
         for($i = 0; $i < $retry; $i++)
         {
-            while(file_exists($this->uri.'.lock'))
+            while(file_exists($this->lock_uri))
             {
                 usleep(1000);
             }
 
-            if($this->has_lock = link($this->uri, $this->uri.'.lock')) break;
+            if($this->has_lock = link($this->uri, $this->lock_uri)) break;
         }
 
         return $this->has_lock;
@@ -34,7 +39,7 @@ class Lock
     
     public function unlock() : bool
     {
-        if($this->has_lock && unlink($this->uri.'.lock'))
+        if($this->has_lock && unlink($this->lock_uri))
         {
                 $this->has_lock = false;
                 return true;
@@ -46,6 +51,6 @@ class Lock
 
     public function __destruct()
     {
-        if($this->hasLock()) unlink($this->uri.'.lock');
+        if($this->hasLock()) unlink($this->lock_uri);
     }
 }
