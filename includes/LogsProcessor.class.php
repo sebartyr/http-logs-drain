@@ -89,7 +89,7 @@ class LogsProcessor
     }
     
     private function writeCSVFile() : bool
-    {;
+    {
         $filepath = $this->dirpath.'/'.$this->getFullFilename();
         $f = fopen($filepath, "a+");
         $lock = new Lock($f);
