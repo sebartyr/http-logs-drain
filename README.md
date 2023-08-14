@@ -68,9 +68,9 @@ Configure the tool in `includes/config.php`
 
 ### Convert logs stored in DB
 
-Logs stored in DB can be converted. Reach `https://<DRAIN-URL>/convertlogs/` to convert the default DB to a `.log` file
+Logs stored in DB can be converted. Reach `https://<DRAIN-URL>/convertlogs/` to convert the default table to a `.log` file.
 
-The log file which will be created, will be stored by default in a directory in `https://<DRAIN-URL>/convertlogs/converted-logs`
+The log file which will be created, will be stored by default in a directory in `https://<DRAIN-URL>/convertlogs/converted-logs`.
 
 Some important options are available:
 - `https://<DRAIN-URL>/convertlogs/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
