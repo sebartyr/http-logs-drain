@@ -26,7 +26,6 @@ class LogsEraser
         $date_after = (!empty($this->date_after))?$this->date_after:'1900-01-01T00:00:00.000Z';
         $date_before = (!empty($this->date_before))?$this->date_before:'9999-12-31T23:59:59.999Z';
 
-
         try
         {
             switch(DB_MODE)
