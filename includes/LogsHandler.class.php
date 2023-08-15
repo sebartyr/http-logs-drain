@@ -67,9 +67,7 @@ class LogsHandler
 
     public function erase() : bool
     {
-        require('db_connect.php');
-
-        
+        require('db_connect.php');      
 
         try
         {
@@ -99,7 +97,7 @@ class LogsHandler
         return false;
     }
 
-    public function getNbHandledRow() : int
+    public function getNbHandledRows() : int
     {
         return $this->nb_handled_rows;
     }
