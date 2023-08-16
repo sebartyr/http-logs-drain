@@ -110,7 +110,7 @@ class LogsHandler
     private function convertTimeDelta(string $time_delta) : void
     {
         $m = [];
-        if(preg_match("/^([+-]?)([0-9]+)([dhm])$/", $time_delta, $m))
+        if(preg_match("/^([-]?)([0-9]+)([dhm])$/", $time_delta, $m))
         {
             $nb = (int) $m[2];
             $factor = 0;
