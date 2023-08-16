@@ -10,13 +10,15 @@ class LogsHandler
     private string $date_after;
     private int $nb_handled_rows;
 
-    public function __construct($table = DB_TABLE, $date_before = "", $date_after = "", string $mode = 'log')
+    public function __construct($table = DB_TABLE, $date_before = "", $date_after = "", string $time_delta = "", string $mode = 'log')
     {
 
         $this->nb_handled_rows = 0;
 
         $this->mode = $mode;
         $this->table = $table;
+
+        $this->convertTimeDelta($time_delta);
 
         $this->date_after = (!empty($date_after))?$date_after:'1900-01-01T00:00:00.000Z';
         $this->date_before = (!empty($date_before))?$date_before:'9999-12-31T23:59:59.999Z';
@@ -100,5 +102,47 @@ class LogsHandler
     public function getNbHandledRows() : int
     {
         return $this->nb_handled_rows;
+    }
+
+    private function convertTimeDelta(string $time_delta) : void
+    {
+        $m = [];
+        if(preg_match("/^([+-]?)([0-9]+)([dhm])$/", $time_delta, $m))
+        {
+            $nb = (int) $m[2];
+            $factor = 0;
+
+            switch($m[3])
+            {
+                case 'm':
+                    $factor = 60;
+                    break;
+                
+                case 'h':
+                    $factor = 3600;
+                    break;
+
+                case 'd':
+                    $factor = 86400;
+                    break;
+            }
+
+            $delta_timestamp = $nb*$factor;
+
+            date_default_timezone_set('UTC');
+            $timestamp = time() - $delta_timestamp;
+            $date = date('Y-m-d\TH:i:s.000\Z', $timestamp);
+
+            if($m[1] == '-')
+            {
+                $this->date_after = $date;
+                $this->date_before = "";
+            }
+            else
+            {
+                $this->date_after = "";
+                $this->date_before = $date;
+            }
+        }
     }
 }
