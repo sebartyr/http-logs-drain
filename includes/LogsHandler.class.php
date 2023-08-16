@@ -18,10 +18,13 @@ class LogsHandler
         $this->mode = $mode;
         $this->table = $table;
 
+        $this->date_after = $date_after;
+        $this->date_before = $date_before;
+
         $this->convertTimeDelta($time_delta);
 
-        $this->date_after = (!empty($date_after))?$date_after:'1900-01-01T00:00:00.000Z';
-        $this->date_before = (!empty($date_before))?$date_before:'9999-12-31T23:59:59.999Z';
+        $this->date_after = (!empty($this->date_after))?$this->date_after:'1900-01-01T00:00:00.000Z';
+        $this->date_before = (!empty($this->date_before))?$this->date_before:'9999-12-31T23:59:59.999Z';     
     }
 
     public function convert() : string
