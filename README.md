@@ -77,6 +77,9 @@ Some important options are available:
 - `https://<DRAIN-URL>/convertlogs/?mode=<log or csv>` to configure either log or csv mode
 - `https://<DRAIN-URL>/convertlogs/?before=<date>&after=<date>` to configure the date interval
     - Dates are ISO-8601 compliant : `2023-06-24T14:28:54.360Z`
+- `https://<DRAIN-URL>/convertlogs/?time=<time_delta>` to configure the time delta
+    - `d` = days / `h` = hours / `m` = minutes 
+    - For example : logs older than 7 days = `7d` / logs more recent then 7 days = `-7d`
 
 Extra options are also available:
 - `https://<DRAIN-URL>/convertlogs/?prefix=<your_prefix>` to configure a prefix to name text files
@@ -94,6 +97,9 @@ Some important options are available:
 - `https://<DRAIN-URL>/convertlogs/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
 - `https://<DRAIN-URL>/convertlogs/?before=<date>&after=<date>` to configure the date interval
     - Dates are ISO-8601 compliant : `2023-06-24T14:28:54.360Z`
+- `https://<DRAIN-URL>/convertlogs/?time=<time_delta>` to configure the time delta
+    - `d` = days / `h` = hours / `m` = minutes 
+    - For example : logs older than 7 days = `7d` / logs more recent then 7 days = `-7d`
 
 ### More configuration...
 
