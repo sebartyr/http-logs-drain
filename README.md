@@ -36,8 +36,8 @@ Configure the tool in `includes/config.php`
 
 ### Deploy on your Clever Cloud app
 - Create a PHP app using Git (not SFTP)
-- Create an PostgreSQL or MysQL addon if needed (SQL mode)
-    - The table structure is provided in the repository for MySQL and PostgreSQL
+- **Recommended** : Create an PostgreSQL or MysQL addon (SQL mode)
+    - The table structure is provided in the repository for MySQL and PostgreSQL. Import it :)
     - Update `includes/config.php` with the right environment variables
 - Create a [FS Bucket](https://www.clever-cloud.com/doc/deploy/addon/fs-bucket/) addon if needed (CSV or LOG mode)
     - Mount the bucket where log files will be stored on the instance.
