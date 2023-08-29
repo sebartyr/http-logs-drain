@@ -156,7 +156,7 @@ class LogsProcessor
 
             foreach($logs as $l)
             {
-                if(!($req->execute(array("id" => uniqid().bin2hex(random_bytes(3)), "date" => $l['date'], 'instanceid' => $l['instanceid'], "logsinfo" => $l['logsinfo'])) && $req->closeCursor())) 
+                if(!($req->execute(array("id" => uniqid().dechex(random_int(0,4095)), "date" => $l['date'], 'instanceid' => $l['instanceid'], "logsinfo" => $l['logsinfo'])) && $req->closeCursor())) 
                 {
                     syslog(LOG_ERR, "Error: writeSQL");
                     $no_error = false;
