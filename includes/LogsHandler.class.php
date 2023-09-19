@@ -94,8 +94,7 @@ class LogsHandler
             $req->execute();         
 
             if($data = $req->fetchAll(PDO::FETCH_ASSOC))
-            {
-                
+            { 
                 return json_encode($data);
             }
 

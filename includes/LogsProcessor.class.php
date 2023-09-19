@@ -150,6 +150,7 @@ class LogsProcessor
             }
         }
 
+        syslog(LOG_ERR, "Error: writeJSONFile");
         return false;
     }
 
