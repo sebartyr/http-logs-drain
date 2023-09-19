@@ -89,7 +89,7 @@ Extra options are also available:
 
 ### Stream logs stored in DB 
 
-Logs stored in DB can be streamed too with JSON format directly and reached by an application.
+Logs stored in DB can be streamed too with JSON format directly and reached by an application. By default, the most recent logs are returned.
 
 Some important options are available:
 - `https://<DRAIN-URL>/convert/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
@@ -98,7 +98,7 @@ Some important options are available:
 - `https://<DRAIN-URL>/convert/?time=<time_delta>` to configure the time delta
     - `d` = days / `h` = hours / `m` = minutes 
     - For example : logs older than 7 days = `7d` / logs more recent than 7 days = `-7d`
-- `https://<DRAIN-URL>/convert/?limit=<number of log lines>` to limit the number of the returned log lines.
+- `https://<DRAIN-URL>/convert/?limit=<number of log lines>` to limit the number of the returned log lines (default value = 20)
 - `https://<DRAIN-URL>/convert/?reverse` to reverse the returned result (earlier dates first)
 
 ### Delete logs stored in DB
