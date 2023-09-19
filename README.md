@@ -3,7 +3,7 @@
 This tool written with PHP enables an HTTP log drain for Clever Cloud applications and addons. 
 
 It creates an endpoint to get logs of your apps.
-Logs can be stored in a MySQL/PostgreSQL database or in a text file (`.log` or `.csv`).
+Logs can be stored in a MySQL/PostgreSQL database or in a text file (`.log`, `json` or `.csv`).
 
 ## Installation as a Clever Cloud app
 
