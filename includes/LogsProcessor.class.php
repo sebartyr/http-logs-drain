@@ -76,6 +76,10 @@ class LogsProcessor
                     $this->filename .= '.csv';
                     return $this->writeCSVFile();
                     break;
+                case "json":
+                    $this->filename .= '.json';
+                    return $this->writeJSONFile();
+                    break;
                 }
             }
             else
@@ -129,6 +133,24 @@ class LogsProcessor
         }
 
         syslog(LOG_ERR, "Error: writeLogFile");
+        return false;
+    }
+
+    private function writeJSONFile() : bool
+    {
+        $filepath = $this->dirpath.'/'.$this->getFullFilename();
+        $f = fopen($filepath, "a+");
+        $lock = new Lock($f);
+
+        if($lock->lock())
+        {
+            if(fwrite($f, json_encode($this->logs->getLogs())))
+            {
+                return $lock->unlock() && fclose($f);
+            }
+        }
+
+        syslog(LOG_ERR, "Error: writeJSONFile");
         return false;
     }
 

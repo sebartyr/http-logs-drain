@@ -3,7 +3,7 @@
 This tool written with PHP enables an HTTP log drain for Clever Cloud applications and addons. 
 
 It creates an endpoint to get logs of your apps.
-Logs can be stored in a MySQL/PostgreSQL database or in a text file (`.log` or `.csv`).
+Logs can be stored in a MySQL/PostgreSQL database or in a text file (`.log`, `json` or `.csv`).
 
 ## Installation as a Clever Cloud app
 
@@ -19,20 +19,20 @@ Configure the tool in `includes/config.php`
 
 **Available options:**
 
-| Options          | Description |
-| ---------------- | ----------- |
-| `USERNAME`       | This is the username for the basic HTTP auth |
-| `PASSWORD`       | This is the password for the basic HTTP auth |
-| `MODE`           | Selected mode to save logs (`csv`, `log`, `sql`) |
-| `DIRPATH`        | Directory where `csv` and `log` files are stored  |
+| Options           | Description |
+| ----------------- | ----------- |
+| `USERNAME`        | This is the username for the basic HTTP auth |
+| `PASSWORD`        | This is the password for the basic HTTP auth |
+| `MODE`            | Selected mode to save logs (`csv`, `json`, `log`, `sql`) |
+| `DIRPATH`         | Directory where `csv`, `json` and `log` files are stored  |
 | `DB_`             | Database options  |
-| `DB_MODE`     | Select either `mysql` or `pgsql` |
-| `DB_HOST`     | Database hostname |
-| `DB_PORT`     | Database port |
-| `DB_NAME`   | Database name |
-| `DB_USERNAME` | Database username |
-| `DB_PASSWORD` | Database password |
-| `DB_LOGS`     | Default table name where logs are stored |
+| `DB_MODE`         | Select either `mysql` or `pgsql` |
+| `DB_HOST`         | Database hostname |
+| `DB_PORT`         | Database port |
+| `DB_NAME`         | Database name |
+| `DB_USERNAME`     | Database username |
+| `DB_PASSWORD`     | Database password |
+| `DB_LOGS`         | Default table name where logs are stored |
 
 ### Deploy on your Clever Cloud app
 - Create a PHP app using Git (not SFTP)
@@ -68,38 +68,52 @@ Configure the tool in `includes/config.php`
 
 ### Convert logs stored in DB
 
-Logs stored in DB can be converted. Reach `https://<DRAIN-URL>/convertlogs/` to convert the default table to a `.log` file.
+Logs stored in DB can be converted. Reach `https://<DRAIN-URL>/convert/` to convert the default table to a `.log` file.
 
-The log file which will be created, will be stored by default in a directory in `https://<DRAIN-URL>/convertlogs/converted-logs`.
+The log file which will be created, will be stored by default in a directory in `https://<DRAIN-URL>/convert/converted-logs`.
 
 Some important options are available:
-- `https://<DRAIN-URL>/convertlogs/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
-- `https://<DRAIN-URL>/convertlogs/?mode=<log or csv>` to configure either log or csv mode
-- `https://<DRAIN-URL>/convertlogs/?before=<date>&after=<date>` to configure the date interval
+- `https://<DRAIN-URL>/convert/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
+- `https://<DRAIN-URL>/convert/?mode=<log, json or csv>` to configure either log or csv mode
+- `https://<DRAIN-URL>/convert/?before=<date>&after=<date>` to configure the date interval
     - Dates are ISO-8601 compliant : `2023-06-24T14:28:54.360Z`
-- `https://<DRAIN-URL>/convertlogs/?time=<time_delta>` to configure the time delta
+- `https://<DRAIN-URL>/convert/?time=<time_delta>` to configure the time delta
     - `d` = days / `h` = hours / `m` = minutes 
-    - For example : logs older than 7 days = `7d` / logs more recent then 7 days = `-7d`
+    - For example : logs older than 7 days = `7d` / logs more recent than 7 days = `-7d`
 
 Extra options are also available:
-- `https://<DRAIN-URL>/convertlogs/?prefix=<your_prefix>` to configure a prefix to name text files
-- `https://<DRAIN-URL>/convertlogs/?dirpath=<your_dirpath>` to configure the dirpath where text files are stored
-    - For example : `https://<DRAIN-URL>/convertlogs/foobar`
-- `https://<DRAIN-URL>/convertlogs/?filename=<your_filename>` to configure the filename of text file
+- `https://<DRAIN-URL>/convert/?prefix=<your_prefix>` to configure a prefix to name text files
+- `https://<DRAIN-URL>/convert/?dirpath=<your_dirpath>` to configure the dirpath where text files are stored
+    - For example : `https://<DRAIN-URL>/convert/foobar`
+- `https://<DRAIN-URL>/convert/?filename=<your_filename>` to configure the filename of text file
+
+### Stream logs stored in DB 
+
+Logs stored in DB can be streamed too with JSON format directly and reached by an application. By default, the most recent logs are returned.
+
+Some important options are available:
+- `https://<DRAIN-URL>/convert/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
+- `https://<DRAIN-URL>/convert/?before=<date>&after=<date>` to configure the date interval
+    - Dates are ISO-8601 compliant : `2023-06-24T14:28:54.360Z`
+- `https://<DRAIN-URL>/convert/?time=<time_delta>` to configure the time delta
+    - `d` = days / `h` = hours / `m` = minutes 
+    - For example : logs older than 7 days = `7d` / logs more recent than 7 days = `-7d`
+- `https://<DRAIN-URL>/convert/?limit=<number of log lines>` to limit the number of the returned log lines (default value = 20)
+- `https://<DRAIN-URL>/convert/?reverse` to reverse the returned result (earlier dates first)
 
 ### Delete logs stored in DB
 
-Logs stored in DB can be deleted. Reach `https://<DRAIN-URL>/deletelogs/` to delete logs in the default table
+Logs stored in DB can be deleted. Reach `https://<DRAIN-URL>/delete/` to delete logs in the default table
 
 The number of deleted rows is returned.
 
 Some important options are available:
-- `https://<DRAIN-URL>/convertlogs/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
-- `https://<DRAIN-URL>/convertlogs/?before=<date>&after=<date>` to configure the date interval
+- `https://<DRAIN-URL>/delete/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
+- `https://<DRAIN-URL>/delete/?before=<date>&after=<date>` to configure the date interval
     - Dates are ISO-8601 compliant : `2023-06-24T14:28:54.360Z`
-- `https://<DRAIN-URL>/convertlogs/?time=<time_delta>` to configure the time delta
+- `https://<DRAIN-URL>/delete/?time=<time_delta>` to configure the time delta
     - `d` = days / `h` = hours / `m` = minutes 
-    - For example : logs older than 7 days = `7d` / logs more recent then 7 days = `-7d`
+    - For example : logs older than 7 days = `7d` / logs more recent than 7 days = `-7d`
 
 ### More configuration...
 
