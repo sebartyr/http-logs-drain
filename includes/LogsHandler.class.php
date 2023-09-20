@@ -56,7 +56,7 @@ class LogsHandler
                 {
                     $proto = (!empty($_SERVER['https']))?"https":"http";
                     $port = ($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)?':'.$_SERVER['SERVER_PORT']:"";
-                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/convertlogs/'.$lp->getDirpath().'/'.$lp->getFullFilename();
+                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/convert/'.$lp->getDirpath().'/'.$lp->getFullFilename();
                 }
 
             }
