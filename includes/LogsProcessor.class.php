@@ -139,7 +139,14 @@ class LogsProcessor
     private function writeJSONFile() : bool
     {
         $filepath = $this->dirpath.'/'.$this->getFullFilename();
-        $f = fopen($filepath, "a+");
+
+        if(file_exists($filepath))
+        {
+            $content = json_decode(file_get_contents($filepath));
+            $this->logs->setLogs(array_merge($content, $this->logs->getLogs()));
+        }
+
+        $f = fopen($filepath, "w");
         $lock = new Lock($f);
 
         if($lock->lock())
