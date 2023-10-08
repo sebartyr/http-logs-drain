@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] == 'DELETE')
     }
     else
     {
-        $message = 'An error occured';
+        $message = 'No logs have been deleted';
         syslog(LOG_ERR, $message);
         echo '{"status": "'.$message.'"}';
     }
