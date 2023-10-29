@@ -7,14 +7,14 @@ class Lock
     private string $lock_uri;
     private bool $has_lock;
 
-    public function __construct($fd)
+    public function __construct($fd = null, ?string $filepath = null)
     {
-        $this->uri = stream_get_meta_data($fd)['uri'];
+        $this->uri = (!is_null($fd))?stream_get_meta_data($fd)['uri']:$filepath;
 
         $pathinfo = pathinfo($this->uri);
         $this->lock_uri = $pathinfo['dirname'].'/.'.$pathinfo['basename'].'.lock';
 
-        $this->has_lock = false;
+        $this->has_lock = false; 
     }
 
     public function lock(int $retry = 3) : bool

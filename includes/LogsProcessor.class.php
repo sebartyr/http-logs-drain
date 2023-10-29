@@ -140,17 +140,17 @@ class LogsProcessor
     {
         $filepath = $this->dirpath.'/'.$this->getFullFilename();
 
-        if(file_exists($filepath))
-        {
-            $content = json_decode(file_get_contents($filepath));
-            $this->logs->setLogs(array_merge($content, $this->logs->getLogs()));
-        }
-
-        $f = fopen($filepath, "w");
-        $lock = new Lock($f);
-
+        $lock = new Lock(filepath: $filepath);
         if($lock->lock())
         {
+            if(file_exists($filepath))
+            {
+                $content = json_decode(file_get_contents($filepath));
+                $this->logs->setLogs(array_merge($content, $this->logs->getLogs()));
+            }
+
+            $f = fopen($filepath, "w");
+            
             if(fwrite($f, json_encode($this->logs->getLogs())))
             {
                 return $lock->unlock() && fclose($f);
