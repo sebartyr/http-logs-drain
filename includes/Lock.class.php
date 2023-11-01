@@ -9,6 +9,8 @@ class Lock
 
     public function __construct($fd = null, ?string $filepath = null)
     {
+        if(is_null($fd) && is_null($filepath)) throw new Exception("Lock : invalid parameters");
+
         $this->uri = (!is_null($fd))?stream_get_meta_data($fd)['uri']:$filepath;
 
         $pathinfo = pathinfo($this->uri);
