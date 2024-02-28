@@ -77,6 +77,7 @@ Some important options are available:
 - `https://<DRAIN-URL>/convert/?mode=<log, json or csv>` to configure either log or csv mode
 - `https://<DRAIN-URL>/convert/?before=<date>&after=<date>` to configure the date interval
     - Dates are ISO-8601 compliant : `2023-06-24T14:28:54.360Z`
+    - Use only UTC dates
 - `https://<DRAIN-URL>/convert/?time=<time_delta>` to configure the time delta
     - `d` = days / `h` = hours / `m` = minutes 
     - For example : logs older than 7 days = `7d` / logs more recent than 7 days = `-7d`
@@ -95,6 +96,7 @@ Some important options are available:
 - `https://<DRAIN-URL>/convert/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
 - `https://<DRAIN-URL>/convert/?before=<date>&after=<date>` to configure the date interval
     - Dates are ISO-8601 compliant : `2023-06-24T14:28:54.360Z`
+    - Use only UTC dates
 - `https://<DRAIN-URL>/convert/?time=<time_delta>` to configure the time delta
     - `d` = days / `h` = hours / `m` = minutes 
     - For example : logs older than 7 days = `7d` / logs more recent than 7 days = `-7d`
@@ -111,6 +113,7 @@ Some important options are available:
 - `https://<DRAIN-URL>/delete/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
 - `https://<DRAIN-URL>/delete/?before=<date>&after=<date>` to configure the date interval
     - Dates are ISO-8601 compliant : `2023-06-24T14:28:54.360Z`
+    - Use only UTC dates
 - `https://<DRAIN-URL>/delete/?time=<time_delta>` to configure the time delta
     - `d` = days / `h` = hours / `m` = minutes 
     - For example : logs older than 7 days = `7d` / logs more recent than 7 days = `-7d`
