@@ -149,6 +149,7 @@ class LogsProcessor
         if($lock->lock())
         {
             $content = json_decode(file_get_contents($filepath));
+            $content = (is_null($content))?[]:$content;
             $this->logs->setLogs(array_merge($content, $this->logs->getLogs()));
 
             $f = fopen($filepath, "w");
