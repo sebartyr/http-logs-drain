@@ -121,3 +121,5 @@ Some important options are available:
 ### More configuration...
 
 You could add a [cron job](https://www.clever-cloud.com/doc/administrate/cron/) to store text files on [Cellar](https://www.clever-cloud.com/doc/deploy/addon/cellar/)
+
+_Options can be combined: <url>?option1=value&option2=value_
