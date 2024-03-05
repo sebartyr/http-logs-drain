@@ -79,18 +79,18 @@ class LogsHandler
             switch(DB_MODE)
             {
                 case "pgsql":
-                    $req_string = 'SELECT "date", "instanceid", "logsinfo" FROM "'.$this->table.'" WHERE "date" > :date_after AND "date" < :date_before ORDER BY "date" DESC LIMIT :limit';
+                    $req_string = 'SELECT "date", "instanceid", "logsinfo" FROM "'.$this->table.'" WHERE "date" > :date_after AND "date" < :date_before ORDER BY "date" DESC'.(($limit)?" LIMIT :limit":"");
                     if(!$reverse) $req_string = 'SELECT * FROM ('.$req_string.') AS sub ORDER BY "date" ASC';
                     break;
                 default:
-                    $req_string = 'SELECT `date`, `instanceid`, `logsinfo` FROM `'.$this->table.'` WHERE `date` > :date_after AND `date` < :date_before ORDER BY `date` DESC LIMIT :limit';
+                    $req_string = 'SELECT `date`, `instanceid`, `logsinfo` FROM `'.$this->table.'` WHERE `date` > :date_after AND `date` < :date_before ORDER BY `date` DESC'.(($limit)?" LIMIT :limit":"");
                     if(!$reverse) $req_string = 'SELECT * FROM ('.$req_string.') AS sub ORDER BY `date` ASC';
             } 
 
             $req = $bdd->prepare($req_string);
             $req->bindParam(":date_after", $this->date_after, PDO::PARAM_STR);
             $req->bindParam(":date_before", $this->date_before, PDO::PARAM_STR);
-            $req->bindParam(":limit", $limit, PDO::PARAM_INT);
+            if($limit) $req->bindParam(":limit", $limit, PDO::PARAM_INT);
             $req->execute();         
 
             if($data = $req->fetchAll(PDO::FETCH_ASSOC))
