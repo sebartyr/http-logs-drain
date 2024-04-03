@@ -16,7 +16,7 @@ class Logs
     private function convertRawLogs() : array
     {
         $logs = [];
-        $pattern = "/^.*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z).*\[instanceId=\"([a-z0-9-]+)\" severity=\"[a-zA-Z0-9-]+\" zone=\"[a-zA-Z0-9-]+\"\] (.*)$/m";
+        $pattern = "/^.*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z).*\[\s?instanceId=\"([a-z0-9-]+)\" severity=\"[a-zA-Z0-9-]+\" zone=\"[a-zA-Z0-9-]+\"\s?\] (.*)$/m";
         
         if(preg_match_all($pattern , $this->raw_logs, $m, PREG_SET_ORDER))
         {
@@ -31,7 +31,7 @@ class Logs
 
     public function isValidated() : bool
     {
-        $v = true;
+        $v = !empty($this->logs);
         foreach($this->logs as $logs)
         {
             $v = $v && (!empty($logs["date"]) && !empty($logs["instanceid"]) && !empty($logs["logsinfo"]));
