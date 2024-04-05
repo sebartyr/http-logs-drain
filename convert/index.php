@@ -21,13 +21,13 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
 
     if(!empty($res)) 
     {
-        $message = 'Logs have been converted';
+        $message = '[mode="sql", table="'.$table.'"] Logs have been converted';
         syslog(LOG_INFO, $message);
         echo '{"status": "'.$message.'", "link": "'.$res.'"}';
     }
     else
     {
-        $message = 'An error occured';
+        $message = '[mode="sql", table="'.$table.'"] An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
         syslog(LOG_ERR, $message);
         echo '{"status": "'.$message.'"}';
     }

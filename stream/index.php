@@ -9,7 +9,6 @@ header("Content-Type: application/json");
 
 if($_SERVER['REQUEST_METHOD'] == 'GET')
 {
-    $mode = (isset($_GET['mode']) && !empty($_GET['mode']))?$_GET['mode']:"log";
     $table = (isset($_GET['table']) && Tools::isValidTableName($_GET['table']))?$_GET['table']:DB_TABLE;
     $date_before = (isset($_GET['before']) && Tools::isValidDate($_GET['before']))?$_GET['before']:"";
     $date_after = (isset($_GET['after']) && Tools::isValidDate($_GET['after']))?$_GET['after']:"";
@@ -17,19 +16,20 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
     $limit = (isset($_GET['limit']) && is_numeric($_GET['limit']))?intval($_GET['limit']):((empty($date_before) && empty($date_after) && empty($time_delta))?20:0);
     $reverse = (isset($_GET['reverse']))?true:false;
 
-    $lc = new LogsHandler($table, $date_before, $date_after, $time_delta, $mode);
+    $lc = new LogsHandler($table, $date_before, $date_after, $time_delta);
 
     $res = $lc->stream($limit, $reverse);
 
     if(!empty($res)) 
     {
-        $message = 'Logs have been streamed';
+
+        $message = '[mode="sql", table="'.$table.'"] Logs have been streamed';
         syslog(LOG_INFO, $message);
         echo $res;
     }
     else
     {
-        $message = 'An error occured';
+        $message = '[mode="sql", table="'.$table.'"] An error occured (path="'.$_SERVER['REQUEST_URI'].')';
         syslog(LOG_ERR, $message);
         echo '{"status": "'.$message.'"}';
     }

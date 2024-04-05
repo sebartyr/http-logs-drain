@@ -13,6 +13,7 @@ class LogsProcessor
     private string $prefix;
     private string $dirpath;
     private string $filename;
+    private string $table;
 
     public function __construct(string $mode, string $raw_logs = "")
     {
@@ -22,6 +23,7 @@ class LogsProcessor
         $this->prefix = "";
         $this->dirpath = "";
         $this->filename = "";
+        $this->table = "";
 
         if(!empty($raw_logs)) $this->logs = new Logs($this->raw_logs);
     }
@@ -40,6 +42,11 @@ class LogsProcessor
     public function getDirpath() : string
     {
         return $this->dirpath;
+    }
+
+    public function getTableName() : string
+    {
+        return $this->table;
     }
 
     public function write($dirpath = DIRPATH, $prefix = "", $filename = "") : bool
@@ -169,7 +176,7 @@ class LogsProcessor
         require('db_connect.php');
 
         $logs = $this->logs->getLogs();
-        $table = (isset($_GET['table']) && Tools::isValidTableName($_GET['table']))?$_GET['table']:DB_TABLE;
+        $this->table = (isset($_GET['table']) && Tools::isValidTableName($_GET['table']))?$_GET['table']:DB_TABLE;
 
         $no_error = true;
 
@@ -178,10 +185,10 @@ class LogsProcessor
             switch(DB_MODE)
             {
                 case "pgsql":
-                    $req_string = 'INSERT INTO "'.$table.'"("id", "date", "instanceid", "logsinfo") VALUES(:id, :date, :instanceid, :logsinfo)';
+                    $req_string = 'INSERT INTO "'.$this->table.'"("id", "date", "instanceid", "logsinfo") VALUES(:id, :date, :instanceid, :logsinfo)';
                     break;
                 default:
-                    $req_string = 'INSERT INTO `'.$table.'`(`id`, `date`, `instanceid`, `logsinfo`) VALUES(:id, :date, :instanceid, :logsinfo)';
+                    $req_string = 'INSERT INTO `'.$this->table.'`(`id`, `date`, `instanceid`, `logsinfo`) VALUES(:id, :date, :instanceid, :logsinfo)';
             }
             
             $req = $bdd->prepare($req_string);

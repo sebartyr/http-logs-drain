@@ -17,13 +17,13 @@ if($_SERVER['REQUEST_METHOD'] == 'DELETE')
 
     if($le->erase())
     {
-        $message = 'Logs have been deleted';
+        $message = '[mode="sql", table="'.$table.'"] Logs have been deleted';
         syslog(LOG_INFO, $message);
         echo '{"status": "'.$message.'", "number of deleted rows": "'.$le->getNbHandledRows().'"}';
     }
     else
     {
-        $message = 'No logs have been deleted';
+        $message = '[mode="sql", table="'.$table.'"] An error occured: no logs have been deleted (path="'.$_SERVER['REQUEST_URI'].'")';
         syslog(LOG_ERR, $message);
         echo '{"status": "'.$message.'"}';
     }
