@@ -1,6 +1,6 @@
 <?php
-if(!defined('STDOUT')) define('STDOUT', fopen('php://stdout', 'wb'));
-if(!defined('STDERR')) define('STDERR', fopen('php://stderr', 'wb'));
+
+openlog("http-logs-drain", LOG_PID | LOG_PERROR, LOG_LOCAL0);
 class Logging
 {
    private static string $format = "%date% [%level%] %message%";
@@ -36,18 +36,18 @@ class Logging
    public static function info(string $message) : void
    {
         $message = self::formatMessage("INFO", $message);
-        fwrite(STDOUT, $message);
+        syslog(LOG_INFO, $message);
    }
 
    public static function warn(string $message) : void
    {
         $message = self::formatMessage("WARN", $message);
-        fwrite(STDOUT, $message);
+        syslog(LOG_WARNING, $message);
    }
 
    public static function error(string $message) : void
    {
         $message = self::formatMessage("ERROR", $message);
-        fwrite(STDERR, $message);
+        syslog(LOG_ERR, $message);
    }
 }
