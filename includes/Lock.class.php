@@ -1,4 +1,5 @@
 <?php
+require_once('utils/Logging.class.php');
 
 class Lock
 {
@@ -47,7 +48,7 @@ class Lock
                 return true;
         }
 
-        syslog(LOG_ERR, "Error with file unlocking");
+        Logging::log(LOG_ERR, "Error with file unlocking");
         return false;
     }
 

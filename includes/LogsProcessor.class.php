@@ -3,6 +3,7 @@ require_once('Logs.class.php');
 require_once('Lock.class.php');
 require_once('Tools.class.php');
 require_once('config.php');
+require_once('utils/Logging.class.php');
 
 class LogsProcessor
 {
@@ -95,7 +96,7 @@ class LogsProcessor
             }
         }
 
-        syslog(LOG_ERR, "Error: invalid log format");
+        Logging::log(LOG_ERR, "Error: invalid log format");
         return false;
     }
     
@@ -113,7 +114,7 @@ class LogsProcessor
             {
                 if(!fputcsv($f, $logs, ';'))
                 {
-                    syslog(LOG_ERR, "Error: writeCSVFile");
+                    Logging::log(LOG_ERR, "Error: writeCSVFile");
                     $no_error = false;
                 }
             }
@@ -121,7 +122,7 @@ class LogsProcessor
             return $lock->unlock() && fclose($f) && $no_error;
         }
 
-        syslog(LOG_ERR, "Error: writeCSVFile");
+        Logging::log(LOG_ERR, "Error: writeCSVFile");
         return false;
     }
 
@@ -139,7 +140,7 @@ class LogsProcessor
             }
         }
 
-        syslog(LOG_ERR, "Error: writeLogFile");
+        Logging::log(LOG_ERR, "Error: writeLogFile");
         return false;
     }
 
@@ -167,7 +168,7 @@ class LogsProcessor
             }
         }
 
-        syslog(LOG_ERR, "Error: writeJSONFile");
+        Logging::log(LOG_ERR, "Error: writeJSONFile");
         return false;
     }
 
@@ -197,14 +198,14 @@ class LogsProcessor
             {
                 if(!($req->execute(array("id" => uniqid().dechex(random_int(0,4095)), "date" => $l['date'], 'instanceid' => $l['instanceid'], "logsinfo" => $l['logsinfo'])) && $req->closeCursor())) 
                 {
-                    syslog(LOG_ERR, "Error: writeSQL");
+                    Logging::log(LOG_ERR, "Error: writeSQL");
                     $no_error = false;
                 }
             }
         }
         catch(Exception $e)
         {
-            syslog(LOG_ERR, 'Exception PDO : '.$e->getMessage());
+            Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
         
         return $no_error;

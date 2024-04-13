@@ -1,6 +1,7 @@
 <?php
 require_once('LogsProcessor.class.php');
 require_once('config.php');
+require_once('utils/Logging.class.php');
 
 class LogsHandler
 {
@@ -63,10 +64,10 @@ class LogsHandler
         }
         catch(Exception $e)
         {
-            syslog(LOG_ERR, 'Exception PDO : '.$e->getMessage());
+            Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
 
-        syslog(LOG_ERR, "Error: cannot convert logs");
+        Logging::log(LOG_ERR, "Error: cannot convert logs");
         return "";
     }
 
@@ -101,10 +102,10 @@ class LogsHandler
         }
         catch(Exception $e)
         {
-            syslog(LOG_ERR, 'Exception PDO : '.$e->getMessage());
+            Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
         
-        syslog(LOG_ERR, "Error: cannot stream logs");
+        Logging::log(LOG_ERR, "Error: cannot stream logs");
         return "";
     }
 
@@ -133,10 +134,10 @@ class LogsHandler
         }
         catch(Exception $e)
         {
-            syslog(LOG_ERR, 'Exception PDO : '.$e->getMessage());
+            Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
 
-        syslog(LOG_ERR, "Error: cannot delete logs");
+        Logging::log(LOG_ERR, "Error: cannot delete logs");
         return false;
     }
 
