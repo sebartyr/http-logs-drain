@@ -6,6 +6,8 @@ require_once('includes/utils/Logging.class.php');
 
 header("Content-Type: application/json");
 
+Logging::setFormat(LOG_FORMAT);
+
 function logPrefix(LogsProcessor $lp) : string
 {
     switch(MODE)

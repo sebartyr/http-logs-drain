@@ -1,13 +1,13 @@
 <?php
-
 openlog("http-logs-drain", LOG_PID | LOG_PERROR, LOG_LOCAL0);
+
 class Logging
 {
    private static string $format = "%date% [%level%] %message%";
 
    public static function setFormat(string $format) : void
    {
-        self::$format = $format;
+        if(!empty($format)) self::$format = $format;
    }
 
    private static function formatMessage(string $level, string $message) : string
