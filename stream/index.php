@@ -8,6 +8,8 @@ require_once('../includes/utils/Logging.class.php');
 
 header("Content-Type: application/json");
 
+Logging::setFormat(LOG_FORMAT);
+
 if($_SERVER['REQUEST_METHOD'] == 'GET')
 {
     $table = (isset($_GET['table']) && Tools::isValidTableName($_GET['table']))?$_GET['table']:DB_TABLE;

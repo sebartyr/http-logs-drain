@@ -8,6 +8,8 @@ require_once('../includes/utils/Logging.class.php');
 
 header("Content-Type: application/json");
 
+Logging::setFormat(LOG_FORMAT);
+
 if($_SERVER['REQUEST_METHOD'] == 'GET')
 {
     $mode = (isset($_GET['mode']) && !empty($_GET['mode']))?$_GET['mode']:"log";
