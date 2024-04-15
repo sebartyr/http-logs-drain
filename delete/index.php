@@ -1,9 +1,9 @@
 <?php
-require_once('../includes/LogsHandler.class.php');
-require_once('../includes/Tools.class.php');
-require_once('../includes/config.php');
-require_once('../includes/login.php');
-require_once('../includes/utils/Logging.class.php');
+require_once(__DIR__.'/../includes/class/LogsHandler.class.php');
+require_once(__DIR__.'/../includes/utils/Tools.class.php');
+require_once(__DIR__.'/../includes/config/config.php');
+require_once(__DIR__.'/../includes/utils/login.php');
+require_once(__DIR__.'/../includes/utils/Logging.class.php');
 
 header("Content-Type: application/json");
 

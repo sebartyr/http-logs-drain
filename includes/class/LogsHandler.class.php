@@ -1,7 +1,7 @@
 <?php
-require_once('LogsProcessor.class.php');
-require_once('config.php');
-require_once('utils/Logging.class.php');
+require_once(__DIR__.'/LogsProcessor.class.php');
+require_once(__DIR__.'/../config/config.php');
+require_once(__DIR__.'/../utils/Logging.class.php');
 
 class LogsHandler
 {

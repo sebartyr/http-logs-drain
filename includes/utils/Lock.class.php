@@ -1,5 +1,5 @@
 <?php
-require_once('utils/Logging.class.php');
+require_once(__DIR__.'/../utils/Logging.class.php');
 
 class Lock
 {

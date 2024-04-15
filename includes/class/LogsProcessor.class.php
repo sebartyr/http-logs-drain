@@ -1,9 +1,9 @@
 <?php
-require_once('Logs.class.php');
-require_once('Lock.class.php');
-require_once('Tools.class.php');
-require_once('config.php');
-require_once('utils/Logging.class.php');
+require_once(__DIR__.'/Logs.class.php');
+require_once(__DIR__.'/../utils/Lock.class.php');
+require_once(__DIR__.'/../utils/Tools.class.php');
+require_once(__DIR__.'/../config/config.php');
+require_once(__DIR__.'/../utils/Logging.class.php');
 
 class LogsProcessor
 {
@@ -174,7 +174,7 @@ class LogsProcessor
 
     private function writeSQL() : bool
     {
-        require('db_connect.php');
+        require(__DIR__.'/../utils/db_connect.php');
 
         $logs = $this->logs->getLogs();
         $this->table = (isset($_GET['table']) && Tools::isValidTableName($_GET['table']))?$_GET['table']:DB_TABLE;
