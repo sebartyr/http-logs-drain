@@ -1,9 +1,12 @@
 <?php
-require_once('includes/LogsProcessor.class.php');
-require_once('includes/config.php');
-require_once('includes/login.php');
+require_once(__DIR__.'/includes/class/LogsProcessor.class.php');
+require_once(__DIR__.'/includes/config/config.php');
+require_once(__DIR__.'/includes/utils/login.php');
+require_once(__DIR__.'/includes/utils/Logging.class.php');
 
 header("Content-Type: application/json");
+
+Logging::setFormat(LOG_FORMAT);
 
 function logPrefix(LogsProcessor $lp) : string
 {
@@ -29,26 +32,26 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
         if($lp->write())
         {
             $message = logPrefix($lp).'Logs have been saved';
-            syslog(LOG_INFO, $message);
+            Logging::log(LOG_INFO, $message);
             echo '{"status": "'.$message.'"}';
         }
         else
         {
             $message = logPrefix($lp).'An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
-            syslog(LOG_ERR, $message);
+            Logging::log(LOG_ERR, $message);
             echo '{"status": "'.$message.'"}';
         }
     }
     else
     {
         $message = 'An error occured : post content is empty';
-        syslog(LOG_ERR, $message);
+        Logging::log(LOG_ERR, $message);
         echo '{"status": "'.$message.'"}';
     }
 }
 else
 {
     $message = 'An error occured : not a POST method';
-    syslog(LOG_ERR, $message);
+    Logging::log(LOG_ERR, $message);
     echo '{"status": "'.$message.'"}';
 }

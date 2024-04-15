@@ -6,6 +6,8 @@ define("MODE", "sql");
 
 define("DIRPATH", "test");
 
+define("LOG_FORMAT", "[%level%] %message%");
+
 define("DB_MODE", "mysql");
 define("DB_HOST", getenv("MYSQL_ADDON_HOST"));
 define("DB_PORT", getenv("MYSQL_ADDON_PORT"));

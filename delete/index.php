@@ -1,10 +1,13 @@
 <?php
-require_once('../includes/LogsHandler.class.php');
-require_once('../includes/Tools.class.php');
-require_once('../includes/config.php');
-require_once('../includes/login.php');
+require_once(__DIR__.'/../includes/class/LogsHandler.class.php');
+require_once(__DIR__.'/../includes/utils/Tools.class.php');
+require_once(__DIR__.'/../includes/config/config.php');
+require_once(__DIR__.'/../includes/utils/login.php');
+require_once(__DIR__.'/../includes/utils/Logging.class.php');
 
 header("Content-Type: application/json");
+
+Logging::setFormat(LOG_FORMAT);
 
 if($_SERVER['REQUEST_METHOD'] == 'DELETE')
 {
@@ -18,19 +21,19 @@ if($_SERVER['REQUEST_METHOD'] == 'DELETE')
     if($le->erase())
     {
         $message = '[mode="sql", table="'.$table.'"] Logs have been deleted';
-        syslog(LOG_INFO, $message);
+        Logging::log(LOG_INFO, $message);
         echo '{"status": "'.$message.'", "number of deleted rows": "'.$le->getNbHandledRows().'"}';
     }
     else
     {
         $message = '[mode="sql", table="'.$table.'"] An error occured: no logs have been deleted (path="'.$_SERVER['REQUEST_URI'].'")';
-        syslog(LOG_ERR, $message);
+        Logging::log(LOG_ERR, $message);
         echo '{"status": "'.$message.'"}';
     }
 }
 else
 {
     $message = 'An error occured : not a DELETE method';
-    syslog(LOG_ERR, $message);
+    Logging::log(LOG_ERR, $message);
     echo '{"status": "'.$message.'"}';
 }
