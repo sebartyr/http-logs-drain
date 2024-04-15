@@ -25,6 +25,7 @@ Configure the tool in `includes/config.php`
 | `PASSWORD`        | This is the password for the basic HTTP auth |
 | `MODE`            | Selected mode to save logs (`csv`, `json`, `log`, `sql`) |
 | `DIRPATH`         | Directory where `csv`, `json` and `log` files are stored  |
+| `LOG_FORMAT`      | Format of *this* PHP app. 3 options are displayable `%level%` (INFO/WARN/ERROR), `%date%`, `%message%` |
 | `DB_`             | Database options  |
 | `DB_MODE`         | Select either `mysql` or `pgsql` |
 | `DB_HOST`         | Database hostname |
@@ -60,9 +61,9 @@ Configure the tool in `includes/config.php`
     ```
 - You can add extra options in `<DRAIN-URL>`. It's useful when you want to store logs of multiple apps
     - `https://<DRAIN-URL>/?table=<table_name>` to configure another table name than the provided one in `includes/config.php` (SQL mode)
-    - `https://<DRAIN-URL>/?prefix=<your_prefix>` to configure a prefix to name text files (LOG or CSV mode)
-    - `https://<DRAIN-URL>/?dirpath=<your_dirpath>` to configure the dirpath where text files are stored (LOG or CSV mode)
-    - `https://<DRAIN-URL>/?filename=<your_filename>` to configure the filename of text files (LOG or CSV mode)
+    - `https://<DRAIN-URL>/?prefix=<your_prefix>` to configure a prefix to name text files (LOG, JSON or CSV mode)
+    - `https://<DRAIN-URL>/?dirpath=<your_dirpath>` to configure the dirpath where text files are stored (LOG, JSON or CSV mode)
+    - `https://<DRAIN-URL>/?filename=<your_filename>` to configure the filename of text files (LOG, JSON or CSV mode)
 
 ## Other features
 
