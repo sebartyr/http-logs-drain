@@ -4,6 +4,9 @@ require_once(__DIR__.'/includes/config/config.php');
 require_once(__DIR__.'/includes/utils/login.php');
 require_once(__DIR__.'/includes/utils/Logging.class.php');
 
+use HttpLogsDrain\Utils\Logging;
+use HttpLogsDrain\LogsProcessor;
+
 header("Content-Type: application/json");
 
 Logging::setFormat(LOG_FORMAT);

@@ -1,7 +1,12 @@
 <?php
+namespace HttpLogsDrain;
+
 require_once(__DIR__.'/LogsProcessor.class.php');
 require_once(__DIR__.'/../config/config.php');
 require_once(__DIR__.'/../utils/Logging.class.php');
+
+use HttpLogsDrain\LogsProcessor;
+use HttpLogsDrain\Utils\Logging;
 
 class LogsHandler
 {
@@ -45,7 +50,7 @@ class LogsHandler
 
             $req = $bdd->prepare($req_string);
             $req->execute(array("date_after" => $this->date_after, "date_before" => $this->date_before));
-            if($data = $req->fetchAll(PDO::FETCH_ASSOC))
+            if($data = $req->fetchAll(\PDO::FETCH_ASSOC))
             {
                 $lp = new LogsProcessor($this->mode);
                 $lp->setLogs($data);
@@ -62,7 +67,7 @@ class LogsHandler
 
             }
         }
-        catch(Exception $e)
+        catch(\Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
@@ -89,18 +94,18 @@ class LogsHandler
             } 
 
             $req = $bdd->prepare($req_string);
-            $req->bindParam(":date_after", $this->date_after, PDO::PARAM_STR);
-            $req->bindParam(":date_before", $this->date_before, PDO::PARAM_STR);
-            if($limit) $req->bindParam(":limit", $limit, PDO::PARAM_INT);
+            $req->bindParam(":date_after", $this->date_after, \PDO::PARAM_STR);
+            $req->bindParam(":date_before", $this->date_before, \PDO::PARAM_STR);
+            if($limit) $req->bindParam(":limit", $limit, \PDO::PARAM_INT);
             $req->execute();         
 
-            if($data = $req->fetchAll(PDO::FETCH_ASSOC))
+            if($data = $req->fetchAll(\PDO::FETCH_ASSOC))
             { 
                 return json_encode($data);
             }
 
         }
-        catch(Exception $e)
+        catch(\Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
@@ -132,7 +137,7 @@ class LogsHandler
             if($this->nb_handled_rows > 0) return true;
             
         }
-        catch(Exception $e)
+        catch(\Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }

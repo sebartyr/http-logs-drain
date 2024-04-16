@@ -1,5 +1,7 @@
 <?php
 
+namespace HttpLogsDrain;
+
 class Logs
 {
 

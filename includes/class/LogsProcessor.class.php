@@ -1,9 +1,16 @@
 <?php
+
+namespace HttpLogsDrain;
+
 require_once(__DIR__.'/Logs.class.php');
 require_once(__DIR__.'/../utils/Lock.class.php');
 require_once(__DIR__.'/../utils/Tools.class.php');
 require_once(__DIR__.'/../config/config.php');
 require_once(__DIR__.'/../utils/Logging.class.php');
+
+use HttpLogsDrain\Utils\Tools;
+use HttpLogsDrain\Utils\Lock;
+use HttpLogsDrain\Utils\Logging;
 
 class LogsProcessor
 {
@@ -203,7 +210,7 @@ class LogsProcessor
                 }
             }
         }
-        catch(Exception $e)
+        catch(\Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
