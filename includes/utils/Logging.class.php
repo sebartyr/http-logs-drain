@@ -1,4 +1,6 @@
 <?php
+namespace HttpLogsDrain\Utils;
+
 openlog("http-logs-drain", LOG_PID | LOG_PERROR, LOG_LOCAL0);
 
 class Logging

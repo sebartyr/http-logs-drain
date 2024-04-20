@@ -1,4 +1,6 @@
 <?php
+
+namespace HttpLogsDrain\Utils;
 class Tools
 {
     public static function isValidFilename(string $name) : bool
