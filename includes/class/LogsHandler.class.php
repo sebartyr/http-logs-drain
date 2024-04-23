@@ -7,6 +7,8 @@ require_once(__DIR__.'/../utils/Logging.class.php');
 
 use HttpLogsDrain\LogsProcessor;
 use HttpLogsDrain\Utils\Logging;
+use PDO;
+use Exception;
 
 class LogsHandler
 {
@@ -51,7 +53,7 @@ class LogsHandler
 
             $req = $bdd->prepare($req_string);
             $req->execute(array("date_after" => $this->date_after, "date_before" => $this->date_before));
-            if($data = $req->fetchAll(\PDO::FETCH_ASSOC))
+            if($data = $req->fetchAll(PDO::FETCH_ASSOC))
             {
                 $lp = new LogsProcessor($this->mode);
                 $lp->setLogs($data);
@@ -76,7 +78,7 @@ class LogsHandler
 
             }
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
@@ -103,18 +105,18 @@ class LogsHandler
             } 
 
             $req = $bdd->prepare($req_string);
-            $req->bindParam(":date_after", $this->date_after, \PDO::PARAM_STR);
-            $req->bindParam(":date_before", $this->date_before, \PDO::PARAM_STR);
-            if($limit) $req->bindParam(":limit", $limit, \PDO::PARAM_INT);
+            $req->bindParam(":date_after", $this->date_after, PDO::PARAM_STR);
+            $req->bindParam(":date_before", $this->date_before, PDO::PARAM_STR);
+            if($limit) $req->bindParam(":limit", $limit, PDO::PARAM_INT);
             $req->execute();         
 
-            if($data = $req->fetchAll(\PDO::FETCH_ASSOC))
+            if($data = $req->fetchAll(PDO::FETCH_ASSOC))
             { 
                 return json_encode($data);
             }
 
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
@@ -146,7 +148,7 @@ class LogsHandler
             if($this->nb_handled_rows > 0) return true;
             
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
@@ -162,8 +164,7 @@ class LogsHandler
             $a = new \PharData($path.'/'.$filename.'.tar');
             $a->addFile($path.'/'.$filename, $filename);
             $a->compress(\Phar::GZ);
-            unlink($path.'/'.$filename.'.tar');
-            unlink($path.'/'.$filename);
+            if(!(unlink($path.'/'.$filename.'.tar') && unlink($path.'/'.$filename))) Logging::log(LOG_ERR, "");
         } 
         catch (\Exception $e) 
         {
