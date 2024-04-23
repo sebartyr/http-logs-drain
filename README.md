@@ -82,6 +82,7 @@ Some important options are available:
 
 - `https://<DRAIN-URL>/convert/?table=<table_name>` to configure another table name than the default one in `includes/config.php`
 - `https://<DRAIN-URL>/convert/?mode=<log, json or csv>` to configure either log or csv mode
+- `https://<DRAIN-URL>/convert/?compress` to compress the converted log file
 - `https://<DRAIN-URL>/convert/?before=<date>&after=<date>` to configure the date interval
   - Dates are ISO-8601 compliant : `2023-06-24T14:28:54.360Z`
   - Use only UTC dates
