@@ -36,7 +36,7 @@ class LogsHandler
 
     public function convert(bool $compress = false) : string
     {
-        require('db_connect.php');
+        require(__DIR__.'/../utils/db_connect.php');
 
         try
         {
