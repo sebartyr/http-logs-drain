@@ -9,6 +9,8 @@ use HttpLogsDrain\LogsProcessor;
 use HttpLogsDrain\Utils\Logging;
 use PDO;
 use Exception;
+use PharData;
+use Phar;
 
 class LogsHandler
 {
@@ -161,12 +163,12 @@ class LogsHandler
     {
         try
         {
-            $a = new \PharData($path.'/'.$filename.'.tar');
+            $a = new PharData($path.'/'.$filename.'.tar');
             $a->addFile($path.'/'.$filename, $filename);
-            $a->compress(\Phar::GZ);
-            if(!(unlink($path.'/'.$filename.'.tar') && unlink($path.'/'.$filename))) Logging::log(LOG_ERR, "");
+            $a->compress(Phar::GZ);
+            if(!(unlink($path.'/'.$filename.'.tar') && unlink($path.'/'.$filename))) Logging::log(LOG_ERR, 'Clean-up failed (path="'.$_SERVER['REQUEST_URI'].')');
         } 
-        catch (\Exception $e) 
+        catch (Exception $e) 
         {
             Logging::log(LOG_ERR, "Exception : " . $e);
             return false;
