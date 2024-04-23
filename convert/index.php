@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__.'/../includes/class/LogsHandler.class.php');
-require_once(__DIR__.'/../includes/class/Tools.class.php');
+require_once(__DIR__.'/../includes/utils/Tools.class.php');
 require_once(__DIR__.'/../includes/config/config.php');
 require_once(__DIR__.'/../includes/utils/login.php');
 require_once(__DIR__.'/../includes/utils/Logging.class.php');
