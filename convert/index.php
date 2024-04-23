@@ -21,10 +21,11 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
     $date_before = (isset($_GET['before']) && Tools::isValidDate($_GET['before']))?$_GET['before']:"";
     $date_after = (isset($_GET['after']) && Tools::isValidDate($_GET['after']))?$_GET['after']:"";
     $time_delta = (isset($_GET['time']) && !empty($_GET['time']))?$_GET['time']:"";
+    $compress = (isset($_GET['compress']))?true:false;
 
     $lc = new LogsHandler($table, $date_before, $date_after, $time_delta, $mode);
 
-    $res = $lc->convert();
+    $res = $lc->convert($compress);
 
     if(!empty($res)) 
     {

@@ -15,6 +15,7 @@ class LogsHandler
     private string $date_before;
     private string $date_after;
     private int $nb_handled_rows;
+    private bool $compress;
 
     public function __construct($table = DB_TABLE, $date_before = "", $date_after = "", string $time_delta = "", string $mode = 'log')
     {
@@ -33,7 +34,7 @@ class LogsHandler
         $this->date_before = (!empty($this->date_before))?$this->date_before:'9999-12-31T23:59:59.999Z';     
     }
 
-    public function convert() : string
+    public function convert(bool $compress = false) : string
     {
         require('db_connect.php');
 
@@ -60,9 +61,17 @@ class LogsHandler
 
                 if($lp->write($dirpath, "", $filename))
                 {
+
+                    $fullFileName = $lp->getFullFilename();
+
+                    if($compress && $this->compress($lp->getDirpath(), $lp->getFullFilename()))
+                    {
+                       $fullFileName .= 'tar.gz';
+                    }
+
                     $proto = (!empty($_SERVER['https']))?"https":"http";
                     $port = ($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)?':'.$_SERVER['SERVER_PORT']:"";
-                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/convert/'.$lp->getDirpath().'/'.$lp->getFullFilename();
+                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/convert/'.$lp->getDirpath().'/'.$fullFileName;
                 }
 
             }
@@ -144,6 +153,30 @@ class LogsHandler
 
         Logging::log(LOG_ERR, "Error: cannot delete logs");
         return false;
+    }
+
+    private function compress(string $path, string $filename) : bool
+    {
+        try
+        {
+            $a = new \PharData($path.'/'.$filename.'.tar');
+
+            // ADD FILES TO archive.tar FILE
+            $a->addFile($path.'/'.$filename);
+
+            // COMPRESS archive.tar FILE. COMPRESSED FILE WILL BE archive.tar.gz
+            $a->compress(\Phar::GZ);
+
+            // NOTE THAT BOTH FILES WILL EXISTS. SO IF YOU WANT YOU CAN UNLINK archive.tar
+            unlink($path.'/'.$filename.'.tar');
+        } 
+        catch (\Exception $e) 
+        {
+            Logging::log(LOG_ERR, "Exception : " . $e);
+            return false;
+        }
+        
+        return true;
     }
 
     public function getNbHandledRows() : int
