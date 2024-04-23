@@ -66,7 +66,7 @@ class LogsHandler
 
                     if($compress && $this->compress($lp->getDirpath(), $lp->getFullFilename()))
                     {
-                       $fullFileName .= 'tar.gz';
+                       $fullFileName .= '.tar.gz';
                     }
 
                     $proto = (!empty($_SERVER['https']))?"https":"http";
@@ -125,7 +125,7 @@ class LogsHandler
 
     public function erase() : bool
     {
-        require('db_connect.php');      
+        require(__DIR__.'/../utils/db_connect.php');      
 
         try
         {

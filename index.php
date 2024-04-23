@@ -34,14 +34,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
 
         if($lp->write())
         {
-            $message = logPrefix($lp).'Logs have been saved';
-            Logging::log(LOG_INFO, $message);
+            $message = 'Logs have been saved';
+            Logging::log(LOG_INFO, logPrefix($lp).$message);
             echo '{"status": "'.$message.'"}';
         }
         else
         {
-            $message = logPrefix($lp).'An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
-            Logging::log(LOG_ERR, $message);
+            $message = 'An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
+            Logging::log(LOG_ERR, logPrefix($lp).$message);
             echo '{"status": "'.$message.'"}';
         }
     }

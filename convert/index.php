@@ -27,16 +27,18 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
 
     $res = $lc->convert($compress);
 
+    $prefix = '[mode="sql", table="'.$table.'"] ';
+
     if(!empty($res)) 
     {
-        $message = '[mode="sql", table="'.$table.'"] Logs have been converted';
-        Logging::log(LOG_INFO, $message);
+        $message = 'Logs have been converted';
+        Logging::log(LOG_INFO, $prefix.$message);
         echo '{"status": "'.$message.'", "link": "'.$res.'"}';
     }
     else
     {
-        $message = '[mode="sql", table="'.$table.'"] An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
-        Logging::log(LOG_ERR, $message);
+        $message = 'An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
+        Logging::log(LOG_ERR, $prefix.$message);
         echo '{"status": "'.$message.'"}';
     }
 }
