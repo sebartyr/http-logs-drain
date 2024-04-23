@@ -160,15 +160,10 @@ class LogsHandler
         try
         {
             $a = new \PharData($path.'/'.$filename.'.tar');
-
-            // ADD FILES TO archive.tar FILE
-            $a->addFile($path.'/'.$filename);
-
-            // COMPRESS archive.tar FILE. COMPRESSED FILE WILL BE archive.tar.gz
+            $a->addFile($path.'/'.$filename, $filename);
             $a->compress(\Phar::GZ);
-
-            // NOTE THAT BOTH FILES WILL EXISTS. SO IF YOU WANT YOU CAN UNLINK archive.tar
             unlink($path.'/'.$filename.'.tar');
+            unlink($path.'/'.$filename);
         } 
         catch (\Exception $e) 
         {
