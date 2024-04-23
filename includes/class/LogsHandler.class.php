@@ -7,6 +7,8 @@ require_once(__DIR__.'/../utils/Logging.class.php');
 
 use HttpLogsDrain\LogsProcessor;
 use HttpLogsDrain\Utils\Logging;
+use PDO;
+use Exception;
 
 class LogsHandler
 {
@@ -15,6 +17,7 @@ class LogsHandler
     private string $date_before;
     private string $date_after;
     private int $nb_handled_rows;
+    private bool $compress;
 
     public function __construct($table = DB_TABLE, $date_before = "", $date_after = "", string $time_delta = "", string $mode = 'log')
     {
@@ -33,9 +36,9 @@ class LogsHandler
         $this->date_before = (!empty($this->date_before))?$this->date_before:'9999-12-31T23:59:59.999Z';     
     }
 
-    public function convert() : string
+    public function convert(bool $compress = false) : string
     {
-        require('db_connect.php');
+        require(__DIR__.'/../utils/db_connect.php');
 
         try
         {
@@ -50,7 +53,7 @@ class LogsHandler
 
             $req = $bdd->prepare($req_string);
             $req->execute(array("date_after" => $this->date_after, "date_before" => $this->date_before));
-            if($data = $req->fetchAll(\PDO::FETCH_ASSOC))
+            if($data = $req->fetchAll(PDO::FETCH_ASSOC))
             {
                 $lp = new LogsProcessor($this->mode);
                 $lp->setLogs($data);
@@ -60,14 +63,22 @@ class LogsHandler
 
                 if($lp->write($dirpath, "", $filename))
                 {
+
+                    $fullFileName = $lp->getFullFilename();
+
+                    if($compress && $this->compress($lp->getDirpath(), $lp->getFullFilename()))
+                    {
+                       $fullFileName .= '.tar.gz';
+                    }
+
                     $proto = (!empty($_SERVER['https']))?"https":"http";
                     $port = ($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443)?':'.$_SERVER['SERVER_PORT']:"";
-                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/convert/'.$lp->getDirpath().'/'.$lp->getFullFilename();
+                    return $proto.'://'.$_SERVER['SERVER_NAME'].$port.'/convert/'.$lp->getDirpath().'/'.$fullFileName;
                 }
 
             }
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
@@ -94,18 +105,18 @@ class LogsHandler
             } 
 
             $req = $bdd->prepare($req_string);
-            $req->bindParam(":date_after", $this->date_after, \PDO::PARAM_STR);
-            $req->bindParam(":date_before", $this->date_before, \PDO::PARAM_STR);
-            if($limit) $req->bindParam(":limit", $limit, \PDO::PARAM_INT);
+            $req->bindParam(":date_after", $this->date_after, PDO::PARAM_STR);
+            $req->bindParam(":date_before", $this->date_before, PDO::PARAM_STR);
+            if($limit) $req->bindParam(":limit", $limit, PDO::PARAM_INT);
             $req->execute();         
 
-            if($data = $req->fetchAll(\PDO::FETCH_ASSOC))
+            if($data = $req->fetchAll(PDO::FETCH_ASSOC))
             { 
                 return json_encode($data);
             }
 
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
@@ -116,7 +127,7 @@ class LogsHandler
 
     public function erase() : bool
     {
-        require('db_connect.php');      
+        require(__DIR__.'/../utils/db_connect.php');      
 
         try
         {
@@ -137,13 +148,31 @@ class LogsHandler
             if($this->nb_handled_rows > 0) return true;
             
         }
-        catch(\Exception $e)
+        catch(Exception $e)
         {
             Logging::log(LOG_ERR, 'Exception PDO : '.$e->getMessage());
         }
 
         Logging::log(LOG_ERR, "Error: cannot delete logs");
         return false;
+    }
+
+    private function compress(string $path, string $filename) : bool
+    {
+        try
+        {
+            $a = new \PharData($path.'/'.$filename.'.tar');
+            $a->addFile($path.'/'.$filename, $filename);
+            $a->compress(\Phar::GZ);
+            if(!(unlink($path.'/'.$filename.'.tar') && unlink($path.'/'.$filename))) Logging::log(LOG_ERR, "");
+        } 
+        catch (\Exception $e) 
+        {
+            Logging::log(LOG_ERR, "Exception : " . $e);
+            return false;
+        }
+        
+        return true;
     }
 
     public function getNbHandledRows() : int

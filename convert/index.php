@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__.'/../includes/class/LogsHandler.class.php');
-require_once(__DIR__.'/../includes/class/Tools.class.php');
+require_once(__DIR__.'/../includes/utils/Tools.class.php');
 require_once(__DIR__.'/../includes/config/config.php');
 require_once(__DIR__.'/../includes/utils/login.php');
 require_once(__DIR__.'/../includes/utils/Logging.class.php');
@@ -21,21 +21,24 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
     $date_before = (isset($_GET['before']) && Tools::isValidDate($_GET['before']))?$_GET['before']:"";
     $date_after = (isset($_GET['after']) && Tools::isValidDate($_GET['after']))?$_GET['after']:"";
     $time_delta = (isset($_GET['time']) && !empty($_GET['time']))?$_GET['time']:"";
+    $compress = (isset($_GET['compress']))?true:false;
 
     $lc = new LogsHandler($table, $date_before, $date_after, $time_delta, $mode);
 
-    $res = $lc->convert();
+    $res = $lc->convert($compress);
+
+    $prefix = '[mode="sql", table="'.$table.'"] ';
 
     if(!empty($res)) 
     {
-        $message = '[mode="sql", table="'.$table.'"] Logs have been converted';
-        Logging::log(LOG_INFO, $message);
+        $message = 'Logs have been converted';
+        Logging::log(LOG_INFO, $prefix.$message);
         echo '{"status": "'.$message.'", "link": "'.$res.'"}';
     }
     else
     {
-        $message = '[mode="sql", table="'.$table.'"] An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
-        Logging::log(LOG_ERR, $message);
+        $message = 'An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
+        Logging::log(LOG_ERR, $prefix.$message);
         echo '{"status": "'.$message.'"}';
     }
 }
