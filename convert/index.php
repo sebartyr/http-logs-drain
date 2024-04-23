@@ -23,23 +23,30 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
     $time_delta = (isset($_GET['time']) && !empty($_GET['time']))?$_GET['time']:"";
     $compress = (isset($_GET['compress']))?true:false;
 
-    $lc = new LogsHandler($table, $date_before, $date_after, $time_delta, $mode);
-
-    $res = $lc->convert($compress);
-
-    $prefix = '[mode="sql", table="'.$table.'"] ';
-
-    if(!empty($res)) 
+    try
     {
-        $message = 'Logs have been converted';
-        Logging::log(LOG_INFO, $prefix.$message);
-        echo '{"status": "'.$message.'", "link": "'.$res.'"}';
+        $lc = new LogsHandler($table, $date_before, $date_after, $time_delta, $mode);
+
+        $res = $lc->convert($compress);
+
+        $prefix = '[mode="sql", table="'.$table.'"] ';
+
+        if(!empty($res)) 
+        {
+            $message = 'Logs have been converted';
+            Logging::log(LOG_INFO, $prefix.$message);
+            echo '{"status": "'.$message.'", "link": "'.$res.'"}';
+        }
+        else
+        {
+            $message = 'An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
+            Logging::log(LOG_ERR, $prefix.$message);
+            echo '{"status": "'.$message.'"}';
+        }
     }
-    else
+    catch(Exception $e)
     {
-        $message = 'An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
-        Logging::log(LOG_ERR, $prefix.$message);
-        echo '{"status": "'.$message.'"}';
+        Logging::log(LOG_ERR, $e->getMessage());
     }
 }
 else

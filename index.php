@@ -30,19 +30,26 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
     $post_content = file_get_contents('php://input');
     if(!empty($post_content))
     {
-        $lp = new LogsProcessor(MODE, $post_content);
+        try
+        {
+            $lp = new LogsProcessor(MODE, $post_content);
 
-        if($lp->write())
-        {
-            $message = 'Logs have been saved';
-            Logging::log(LOG_INFO, logPrefix($lp).$message);
-            echo '{"status": "'.$message.'"}';
+            if($lp->write())
+            {
+                $message = 'Logs have been saved';
+                Logging::log(LOG_INFO, logPrefix($lp).$message);
+                echo '{"status": "'.$message.'"}';
+            }
+            else
+            {
+                $message = 'An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
+                Logging::log(LOG_ERR, logPrefix($lp).$message);
+                echo '{"status": "'.$message.'"}';
+            }
         }
-        else
+        catch(Exception $e)
         {
-            $message = 'An error occured (path="'.$_SERVER['REQUEST_URI'].'")';
-            Logging::log(LOG_ERR, logPrefix($lp).$message);
-            echo '{"status": "'.$message.'"}';
+            Logging::log(LOG_ERR, $e->getMessage());
         }
     }
     else

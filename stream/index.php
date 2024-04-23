@@ -23,24 +23,33 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
     $limit = (isset($_GET['limit']) && is_numeric($_GET['limit']))?intval($_GET['limit']):((empty($date_before) && empty($date_after) && empty($time_delta))?20:0);
     $reverse = (isset($_GET['reverse']))?true:false;
 
-    $lc = new LogsHandler($table, $date_before, $date_after, $time_delta);
-
-    $res = $lc->stream($limit, $reverse);
-
-    $prefix = '[mode="sql", table="'.$table.'"] ';
-
-    if(!empty($res)) 
+    try
     {
 
-        $message = 'Logs have been streamed';
-        Logging::log(LOG_INFO, $prefix.$message);
-        echo $res;
+    
+        $lc = new LogsHandler($table, $date_before, $date_after, $time_delta);
+
+        $res = $lc->stream($limit, $reverse);
+
+        $prefix = '[mode="sql", table="'.$table.'"] ';
+
+        if(!empty($res)) 
+        {
+
+            $message = 'Logs have been streamed';
+            Logging::log(LOG_INFO, $prefix.$message);
+            echo $res;
+        }
+        else
+        {
+            $message = 'An error occured (path="'.$_SERVER['REQUEST_URI'].')';
+            Logging::log(LOG_ERR, $prefix.$message);
+            echo '{"status": "'.$message.'"}';
+        }
     }
-    else
+    catch(Exception $e)
     {
-        $message = 'An error occured (path="'.$_SERVER['REQUEST_URI'].')';
-        Logging::log(LOG_ERR, $prefix.$message);
-        echo '{"status": "'.$message.'"}';
+        Logging::log(LOG_ERR, $e->getMessage());
     }
 }
 else

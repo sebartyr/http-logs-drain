@@ -20,21 +20,28 @@ if($_SERVER['REQUEST_METHOD'] == 'DELETE')
     $date_after = (isset($_GET['after']) && Tools::isValidDate($_GET['after']))?$_GET['after']:"";
     $time_delta = (isset($_GET['time']) && !empty($_GET['time']))?$_GET['time']:"";
 
-    $le = new LogsHandler($table, $date_before, $date_after, $time_delta);
-
-    $prefix = '[mode="sql", table="'.$table.'"] ';
-
-    if($le->erase())
+    try
     {
-        $message = 'Logs have been deleted';
-        Logging::log(LOG_INFO, $prefix.$message);
-        echo '{"status": "'.$message.'", "number of deleted rows": "'.$le->getNbHandledRows().'"}';
+        $le = new LogsHandler($table, $date_before, $date_after, $time_delta);
+
+        $prefix = '[mode="sql", table="'.$table.'"] ';
+
+        if($le->erase())
+        {
+            $message = 'Logs have been deleted';
+            Logging::log(LOG_INFO, $prefix.$message);
+            echo '{"status": "'.$message.'", "number of deleted rows": "'.$le->getNbHandledRows().'"}';
+        }
+        else
+        {
+            $message = 'An error occured: no logs have been deleted (path="'.$_SERVER['REQUEST_URI'].'")';
+            Logging::log(LOG_ERR, $prefix.$message);
+            echo '{"status": "'.$message.'"}';
+        }
     }
-    else
+    catch(Exception $e)
     {
-        $message = 'An error occured: no logs have been deleted (path="'.$_SERVER['REQUEST_URI'].'")';
-        Logging::log(LOG_ERR, $prefix.$message);
-        echo '{"status": "'.$message.'"}';
+        Logging::log(LOG_ERR, $e->getMessage());
     }
 }
 else
