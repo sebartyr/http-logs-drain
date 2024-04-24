@@ -19,7 +19,6 @@ class LogsHandler
     private string $date_before;
     private string $date_after;
     private int $nb_handled_rows;
-    private bool $compress;
 
     public function __construct($table = DB_TABLE, $date_before = "", $date_after = "", string $time_delta = "", string $mode = 'log')
     {
@@ -38,7 +37,7 @@ class LogsHandler
         $this->date_before = (!empty($this->date_before))?$this->date_before:'9999-12-31T23:59:59.999Z';     
     }
 
-    public function convert(bool $compress = false) : string
+    public function convert(bool $compression = true) : string
     {
         require(__DIR__.'/../utils/db_connect.php');
 
@@ -68,7 +67,7 @@ class LogsHandler
 
                     $fullFileName = $lp->getFullFilename();
 
-                    if($compress && $this->compress($lp->getDirpath(), $lp->getFullFilename()))
+                    if($compression && $this->compress($lp->getDirpath(), $lp->getFullFilename()))
                     {
                        $fullFileName .= '.tar.gz';
                     }
@@ -91,7 +90,7 @@ class LogsHandler
 
     public function stream(int $limit = 20, bool $reverse = false) : string
     {
-        require('db_connect.php');
+        require(__DIR__.'/../utils/db_connect.php');
 
         try
         {
