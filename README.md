@@ -134,3 +134,7 @@ Some important options are available:
 You could add a [cron job](https://www.clever-cloud.com/doc/administrate/cron/) to store text files on [Cellar](https://www.clever-cloud.com/doc/deploy/addon/cellar/)
 
 *Options can be combined: `<url>`?option1=value&option2=value*
+
+## Support
+
+Contact support@sebartyr.fr :)
